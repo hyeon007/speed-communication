@@ -1,0 +1,122 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/web
+          file: ./apps/web/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/sp-web:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/sp-web:latest
+          cache-from: type=gha,scope=sp-web
+          cache-to: type=gha,mode=max,scope=sp-web
+
+      - name: Build and push api image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/api
+          file: ./apps/api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/sp-api:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/sp-api:latest
+          cache-from: type=gha,scope=sp-api
+          cache-to: type=gha,mode=max,scope=sp-api
+
+  deploy-remote:
+    needs: build-images
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref_name == 'main' || github.ref_name == 'master') &&
+      secrets.DEPLOY_HOST != '' &&
+      secrets.DEPLOY_USERNAME != '' &&
+      secrets.DEPLOY_KEY != '' &&
+      secrets.GHCR_USERNAME != '' &&
+      secrets.GHCR_READ_TOKEN != ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create deploy metadata
+        run: |
+          cat <<EOF > .deploy.env
+          IMAGE_TAG=${{ github.sha }}
+          GHCR_OWNER=${{ github.repository_owner }}
+          EOF
+
+      - name: Copy deploy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: docker-compose.production.yml,infra/nginx/default.prod.conf,.deploy.env
+          target: /opt/sp
+
+      - name: Deploy on remote host
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /opt/sp
+
+            if [ ! -f .env ]; then
+              echo "Missing /opt/sp/.env (production env file)" >&2
+              exit 1
+            fi
+
+            if [ ! -f infra/nginx/ssl/fullchain.pem ] || [ ! -f infra/nginx/ssl/privkey.pem ]; then
+              echo "Missing TLS cert files under /opt/sp/infra/nginx/ssl" >&2
+              echo "Expected: fullchain.pem and privkey.pem" >&2
+              exit 1
+            fi
+
+            export $(grep -v '^#' .deploy.env | xargs)
+            echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            docker compose -f docker-compose.production.yml pull web api nginx
+            docker compose -f docker-compose.production.yml up -d --remove-orphans --no-build
+            docker image prune -f
+
+      - name: Deploy summary
+        run: |
+          echo "Deploy workflow completed."
+          echo "- Remote target: /opt/sp"
+          echo "- Image tag: ${{ github.sha }}"
+          echo "- Note: production env secrets must already exist on server (.env)."

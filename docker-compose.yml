@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sp-postgres
+    environment:
+      - POSTGRES_DB=sp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d sp']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: sp-web
+    ports:
+      - '3000:3000'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: sp-api
+    environment:
+      - PORT=3001
+      - LEAD_STORAGE=${LEAD_STORAGE:-memory}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/sp?schema=public}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change-me-please}
+      - JWT_SECRET=${JWT_SECRET:-replace-this-secret-in-production}
+      - JWT_EXPIRES_IN_SECONDS=${JWT_EXPIRES_IN_SECONDS:-43200}
+    ports:
+      - '3001:3001'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: sp-nginx
+    depends_on:
+      - web
+      - api
+    volumes:
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - '80:80'
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,116 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sp-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-sp}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change-me-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    cpus: 1.0
+    mem_limit: 1024m
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sp}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  web:
+    image: ghcr.io/${GHCR_OWNER:-your-org}/sp-web:${IMAGE_TAG:-latest}
+    container_name: sp-web
+    expose:
+      - '3000'
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME:-모바일셀렉트}
+      - NEXT_PUBLIC_CONTACT_PHONE=${NEXT_PUBLIC_CONTACT_PHONE:-010-0000-0000}
+    restart: always
+    cpus: 1.0
+    mem_limit: 1024m
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider http://127.0.0.1:3000 || exit 1']
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  api:
+    image: ghcr.io/${GHCR_OWNER:-your-org}/sp-api:${IMAGE_TAG:-latest}
+    container_name: sp-api
+    expose:
+      - '3001'
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - LEAD_STORAGE=${LEAD_STORAGE:-prisma}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/sp?schema=public}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change-me-please}
+      - ADMIN_EDITOR_USERNAME=${ADMIN_EDITOR_USERNAME:-admin}
+      - ADMIN_EDITOR_PASSWORD=${ADMIN_EDITOR_PASSWORD:-change-me-please}
+      - ADMIN_OPERATOR_USERNAME=${ADMIN_OPERATOR_USERNAME:-operator}
+      - ADMIN_OPERATOR_PASSWORD=${ADMIN_OPERATOR_PASSWORD:-change-me-operator}
+      - ADMIN_VIEWER_USERNAME=${ADMIN_VIEWER_USERNAME:-viewer}
+      - ADMIN_VIEWER_PASSWORD=${ADMIN_VIEWER_PASSWORD:-change-me-viewer}
+      - JWT_SECRET=${JWT_SECRET:-replace-this-secret-in-production}
+      - JWT_EXPIRES_IN_SECONDS=${JWT_EXPIRES_IN_SECONDS:-43200}
+      - RATE_LIMIT_TRUST_PROXY_HEADER=${RATE_LIMIT_TRUST_PROXY_HEADER:-true}
+      - LEAD_NOTIFY_EMAIL_ENABLED=${LEAD_NOTIFY_EMAIL_ENABLED:-false}
+      - LEAD_NOTIFY_EMAIL_SMTP_HOST=${LEAD_NOTIFY_EMAIL_SMTP_HOST:-smtp.example.com}
+      - LEAD_NOTIFY_EMAIL_SMTP_PORT=${LEAD_NOTIFY_EMAIL_SMTP_PORT:-587}
+      - LEAD_NOTIFY_EMAIL_SMTP_SECURE=${LEAD_NOTIFY_EMAIL_SMTP_SECURE:-false}
+      - LEAD_NOTIFY_EMAIL_SMTP_USER=${LEAD_NOTIFY_EMAIL_SMTP_USER:-}
+      - LEAD_NOTIFY_EMAIL_SMTP_PASS=${LEAD_NOTIFY_EMAIL_SMTP_PASS:-}
+      - LEAD_NOTIFY_EMAIL_FROM=${LEAD_NOTIFY_EMAIL_FROM:-noreply@example.com}
+      - LEAD_NOTIFY_EMAIL_TO=${LEAD_NOTIFY_EMAIL_TO:-ops@example.com}
+      - LEAD_NOTIFY_EMAIL_SUBJECT_PREFIX=${LEAD_NOTIFY_EMAIL_SUBJECT_PREFIX:-[SP]}
+      - LEAD_NOTIFY_EMAIL_TIMEOUT_MS=${LEAD_NOTIFY_EMAIL_TIMEOUT_MS:-5000}
+      - LEAD_NOTIFY_EMAIL_RETRY_COUNT=${LEAD_NOTIFY_EMAIL_RETRY_COUNT:-2}
+      - LEAD_NOTIFY_EMAIL_RETRY_DELAY_MS=${LEAD_NOTIFY_EMAIL_RETRY_DELAY_MS:-1000}
+    restart: always
+    cpus: 1.5
+    mem_limit: 1536m
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider http://127.0.0.1:3001/healthz || exit 1']
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: sp-nginx
+    volumes:
+      - ./infra/nginx/default.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/nginx/ssl:/etc/nginx/ssl:ro
+    ports:
+      - '80:80'
+      - '443:443'
+    restart: always
+    cpus: 0.5
+    mem_limit: 256m
+    depends_on:
+      web:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q --spider http://127.0.0.1/healthz || exit 1']
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres_data:
