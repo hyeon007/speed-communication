@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { ConsultCtaButton } from '@/components/consult-cta-button';
+import { MotionSection } from '@/components/motion-presets';
 
 const comparisonRows = [
   { key: '카메라', iphone: 'Pro급 카메라 + 영상 안정화', galaxy: 'Ultra급 카메라 + 고배율 줌' },
@@ -10,15 +11,15 @@ const comparisonRows = [
 export default function ComparePage() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
-      <header className="max-w-3xl">
+      <MotionSection className="max-w-3xl">
         <p className="text-xs font-light tracking-[0.3em] uppercase text-[#c17f59]">COMPARE MODELS</p>
         <h1 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-5xl">기기 비교</h1>
         <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">
           주요 스펙과 실제 사용 포인트를 기준으로 추천 방향을 빠르게 확인할 수 있습니다.
         </p>
-      </header>
+      </MotionSection>
 
-      <section className="mt-24 overflow-x-auto border-t border-[#e5e0d8]">
+      <MotionSection className="mt-24 overflow-x-auto border-t border-[#e5e0d8]" delay={0.05}>
         <table className="w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-[#e5e0d8] text-xs tracking-[0.15em] uppercase text-[#c17f59]">
@@ -37,19 +38,18 @@ export default function ComparePage() {
             ))}
           </tbody>
         </table>
-      </section>
+      </MotionSection>
 
-      <div className="mt-24">
-        <Link
-          href="/consult"
+      <MotionSection className="mt-24" delay={0.1}>
+        <ConsultCtaButton
           className="gallery-link inline-flex text-xs tracking-[0.15em] uppercase text-[#5a5a5a] px-8 py-4 transition-colors duration-500 hover:text-[#1a1a1a]"
         >
           비교 결과로 상담 신청하기
-        </Link>
+        </ConsultCtaButton>
         <p className="mt-4 text-[11px] leading-5 text-[#8a8a8a]">
           *조건 충족 시 최대 50만원 상당 지원 혜택 적용이 가능하며, 상세 기준은 상담 시 안내됩니다.
         </p>
-      </div>
+      </MotionSection>
     </main>
   );
 }

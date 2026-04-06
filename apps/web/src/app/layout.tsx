@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import Link from "next/link";
+import { ConsultModalProvider } from '@/components/consult-modal-provider';
 import "./globals.css";
 import { siteConfig } from "@/lib/site-config";
 
@@ -98,7 +99,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <ConsultModalProvider>{children}</ConsultModalProvider>
         <footer className="mx-auto mt-auto w-full max-w-6xl px-6 pb-12 pt-8 text-xs tracking-widest text-[#8a8a8a] md:px-12">
           <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#e5e0d8] pt-6">
             <p className="font-light">© {new Date().getFullYear()} {siteConfig.name}</p>

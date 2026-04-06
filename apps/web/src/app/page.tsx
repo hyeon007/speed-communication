@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useConsultModal } from '@/components/consult-modal-provider';
+import { ConsultCtaButton } from '@/components/consult-cta-button';
 import { HeroShowcase } from '@/components/hero-showcase';
-import { ConsultModal } from '@/components/consult-modal';
+import { MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { contactPhoneHref, siteConfig } from '@/lib/site-config';
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { openConsultModal } = useConsultModal();
 
   return (
     <>
@@ -34,7 +35,8 @@ export default function Home() {
               비교
             </Link>
             <button
-              onClick={() => setIsModalOpen(true)}
+              type="button"
+              onClick={() => openConsultModal()}
               className="text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-6 py-3 transition-all duration-500 hover:bg-[#9a6347]"
             >
               무료 상담 신청
@@ -44,24 +46,20 @@ export default function Home() {
 
       <HeroShowcase />
 
-      <section className="mt-24 grid gap-8 md:mt-32 md:grid-cols-3 md:gap-12">
+      <MotionStagger className="mt-24 grid gap-8 md:mt-32 md:grid-cols-3 md:gap-12" delayChildren={0.15}>
         {[
           { title: '기기 추천', desc: '사용 패턴에 맞춘 모델·용량·색상 추천' },
           { title: '요금 최적화', desc: '통신 패턴 기반 가장 유리한 요금제 제안' },
           { title: '빠른 연결', desc: '신청 후 24시간 내 상담 연락 보장' },
-        ].map((item, index) => (
-          <article
-            key={item.title}
-            className="group border-t border-[#e5e0d8] pt-8 opacity-0 animate-fade-in-up"
-            style={{ animationDelay: `${0.3 + index * 0.15}s` }}
-          >
+        ].map((item) => (
+          <MotionItem key={item.title} className="group border-t border-[#e5e0d8] pt-8">
             <h2 className="font-serif text-2xl font-normal text-[#1a1a1a]">{item.title}</h2>
             <p className="mt-4 text-sm leading-7 text-[#5a5a5a]">{item.desc}</p>
-          </article>
+          </MotionItem>
         ))}
-      </section>
+      </MotionStagger>
 
-      <section className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24">
+      <MotionSection className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24" delay={0.1}>
         <div className="max-w-2xl">
           <p className="text-xs tracking-[0.3em] uppercase text-[#c17f59]">전문가 상담</p>
           <h3 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">
@@ -71,12 +69,11 @@ export default function Home() {
             PG 결제 없이 간단히 신청하면, 조건 비교부터 개통 전략까지 직접 안내해드립니다.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <button
-              onClick={() => setIsModalOpen(true)}
+            <ConsultCtaButton
               className="text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-8 py-4 transition-all duration-500 hover:bg-[#9a6347]"
             >
               상담 신청하기
-            </button>
+            </ConsultCtaButton>
             <a
               href={contactPhoneHref}
               className="gallery-link text-xs tracking-[0.15em] uppercase text-[#5a5a5a] px-8 py-4 transition-colors duration-500 hover:text-[#1a1a1a]"
@@ -85,17 +82,17 @@ export default function Home() {
             </a>
           </div>
         </div>
-      </section>
+      </MotionSection>
 
-      <section className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24">
+      <MotionSection className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24" delay={0.1}>
         <div className="mb-12 md:mb-16">
           <p className="text-xs tracking-[0.3em] uppercase text-[#c17f59]">고객 후기</p>
           <h3 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">
             실제 고객들의 이야기
           </h3>
         </div>
-        
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+
+        <MotionStagger className="grid gap-8 md:grid-cols-2 lg:grid-cols-2" delayChildren={0.15}>
           {[
             {
               quote: "복잡한 요금제 비교를 한 번에 해결해주셨어요. 제 사용 패턴에 딱 맞는 요금제로 변경해서 매달 3만원이나 절약했네요.",
@@ -117,11 +114,10 @@ export default function Home() {
               author: "정유진",
               role: "프리랜서",
             },
-          ].map((review, index) => (
-            <article
-              key={index}
-              className="group relative border border-[#e5e0d8] p-8 opacity-0 animate-fade-in-up transition-all duration-500 hover:border-[#c17f59] hover:shadow-lg"
-              style={{ animationDelay: `${0.4 + index * 0.15}s` }}
+          ].map((review) => (
+            <MotionItem
+              key={review.author}
+              className="group relative border border-[#e5e0d8] p-8 transition-all duration-500 hover:border-[#c17f59] hover:shadow-lg"
             >
                <div className="absolute top-6 left-6 text-6xl font-serif text-[#e5e0d8] leading-none">“</div>
               <blockquote className="relative pt-8">
@@ -142,13 +138,11 @@ export default function Home() {
                   </div>
                 </footer>
               </blockquote>
-            </article>
+            </MotionItem>
           ))}
-        </div>
-      </section>
+        </MotionStagger>
+      </MotionSection>
     </main>
-
-    <ConsultModal isOpen={isModalOpen} onCloseAction={() => setIsModalOpen(false)} />
   </>
   );
 }

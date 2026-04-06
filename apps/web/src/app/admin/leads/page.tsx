@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { MotionSection } from '@/components/motion-presets';
 import { buildApiUrl } from '@/lib/api';
 import { clearAdminToken, getAdminToken } from '@/lib/admin-auth';
 
@@ -1182,10 +1183,10 @@ export default function AdminLeadsPage() {
       ) : null}
 
       {isLoading ? (
-        <p className="mt-24 text-sm text-[#5a5a5a]">문의 목록을 불러오는 중...</p>
+        <p className="mt-24 text-sm text-[#5a5a5a] animate-fade-in-up-fast">문의 목록을 불러오는 중...</p>
       ) : (
-        <section className="mt-24 space-y-8">
-          <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <MotionSection className="mt-24 space-y-8" delay={0.02}>
+          <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 animate-fade-in-up-fast">
             <article className="border-t border-[#e5e0d8] pt-6">
               <p className="text-xs tracking-[0.15em] uppercase text-[#8a8a8a]">전체 문의</p>
               <p className="mt-2 text-2xl font-light text-[#1a1a1a]">{stats.total}</p>
@@ -1212,7 +1213,7 @@ export default function AdminLeadsPage() {
             </article>
           </section>
 
-          <section className="border-t border-[#e5e0d8] pt-8">
+          <section className="border-t border-[#e5e0d8] pt-8 animate-fade-in-up-fast">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-[#1a1a1a]">문의 접수 추세</p>
@@ -1274,7 +1275,7 @@ export default function AdminLeadsPage() {
             )}
           </section>
 
-          <section className="border-t border-[#e5e0d8] pt-8">
+          <section className="border-t border-[#e5e0d8] pt-8 animate-fade-in-up-fast">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-[#1a1a1a]">필터 프리셋</p>
@@ -1340,7 +1341,7 @@ export default function AdminLeadsPage() {
             )}
           </section>
 
-          <section className="border-t border-[#e5e0d8] pt-8">
+          <section className="border-t border-[#e5e0d8] pt-8 animate-fade-in-up-fast">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-[#1a1a1a]">최근 활동</p>
@@ -1619,10 +1620,11 @@ export default function AdminLeadsPage() {
             </p>
           </section>
 
-          {leads.map((lead) => (
+          {leads.map((lead, index) => (
             <article
               key={lead.id}
-              className="border-t border-[#e5e0d8] pt-8"
+              className="border-t border-[#e5e0d8] pt-8 opacity-0 animate-fade-in-up-fast"
+              style={{ animationDelay: `${Math.min(index * 0.03, 0.36)}s` }}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -1791,7 +1793,7 @@ export default function AdminLeadsPage() {
               </button>
             </div>
           </div>
-        </section>
+        </MotionSection>
       )}
     </main>
   );

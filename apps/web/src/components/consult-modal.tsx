@@ -21,14 +21,20 @@ const initialForm: FormState = {
 type ConsultModalProps = {
   isOpen: boolean;
   onCloseAction: () => void;
+  defaultInterestDevice?: string;
 };
 
-export function ConsultModal({ isOpen, onCloseAction }: ConsultModalProps) {
+export function ConsultModal({
+  isOpen,
+  onCloseAction,
+  defaultInterestDevice = '',
+}: ConsultModalProps) {
   const [form, setForm] = useState<FormState>(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const firstInputRef = useRef<HTMLInputElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   const canSubmit = useMemo(() => {
     return (
@@ -42,11 +48,11 @@ export function ConsultModal({ isOpen, onCloseAction }: ConsultModalProps) {
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setForm(initialForm);
+      setForm({ ...initialForm, interestDevice: defaultInterestDevice });
       setServerMessage(null);
       setErrorMessage(null);
     }
-  }, [isOpen]);
+  }, [defaultInterestDevice, isOpen]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -81,6 +87,114 @@ export function ConsultModal({ isOpen, onCloseAction }: ConsultModalProps) {
     }, 30);
 
     return () => window.clearTimeout(timer);
+  }, [isOpen]);
+
+  const getFocusableElements = () => {
+    if (!modalRef.current) {
+      return [];
+    }
+
+    return Array.from(
+      modalRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((element) => element.offsetParent !== null);
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleFocusTrap = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const elements = getFocusableElements();
+      if (!elements.length) {
+        return;
+      }
+
+      const activeElement = document.activeElement as HTMLElement | null;
+      const currentIndex = activeElement ? elements.indexOf(activeElement) : -1;
+      const lastIndex = elements.length - 1;
+
+      const nextIndex = event.shiftKey
+        ? currentIndex <= 0
+          ? lastIndex
+          : currentIndex - 1
+        : currentIndex === -1 || currentIndex >= lastIndex
+          ? 0
+          : currentIndex + 1;
+
+      event.preventDefault();
+      elements[nextIndex]?.focus();
+    };
+
+    window.addEventListener('keydown', handleFocusTrap, true);
+    return () => window.removeEventListener('keydown', handleFocusTrap, true);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleFocusIn = (event: FocusEvent) => {
+      if (!modalRef.current) {
+        return;
+      }
+
+      const target = event.target as Node | null;
+      if (target && !modalRef.current.contains(target)) {
+        const elements = getFocusableElements();
+        elements[0]?.focus();
+      }
+    };
+
+    document.addEventListener('focusin', handleFocusIn, true);
+    return () => document.removeEventListener('focusin', handleFocusIn, true);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) {
+      return;
+    }
+
+    const bodyChildren = Array.from(document.body.children) as HTMLElement[];
+    const backdrop = bodyChildren.find(
+      (element) =>
+        element !== modalRef.current &&
+        element.className.includes('fixed inset-0') &&
+        element.className.includes('bg-black/50'),
+    );
+
+    const keepElements = new Set<HTMLElement>([modalRef.current]);
+    if (backdrop) {
+      keepElements.add(backdrop);
+    }
+
+    const hiddenElements: HTMLElement[] = [];
+
+    for (const element of bodyChildren) {
+      if (keepElements.has(element)) {
+        continue;
+      }
+
+      element.setAttribute('data-consult-modal-hidden', 'true');
+      element.setAttribute('aria-hidden', 'true');
+      element.setAttribute('inert', '');
+      hiddenElements.push(element);
+    }
+
+    return () => {
+      for (const element of hiddenElements) {
+        element.removeAttribute('aria-hidden');
+        element.removeAttribute('inert');
+        element.removeAttribute('data-consult-modal-hidden');
+      }
+    };
   }, [isOpen]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -144,6 +258,7 @@ export function ConsultModal({ isOpen, onCloseAction }: ConsultModalProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="consult-modal-title"
+            ref={modalRef}
             className="fixed inset-4 z-50 mx-auto my-auto flex max-h-[90vh] max-w-lg flex-col overflow-hidden rounded-2xl bg-[#faf9f7] shadow-2xl md:inset-auto md:top-1/2 md:left-1/2 md:mt-0 md:-translate-x-1/2 md:-translate-y-1/2"
           >
             {/* Header */}
