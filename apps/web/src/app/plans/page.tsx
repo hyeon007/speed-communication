@@ -1,5 +1,5 @@
 import { ConsultCtaButton } from '@/components/consult-cta-button';
-import { MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
+import { MotionHoverCard, MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { SupportPromoNote } from '@/components/support-promo-note';
 
 const plans = [
@@ -34,24 +34,23 @@ export default function PlansPage() {
 
       <MotionStagger className="mt-24 grid gap-8 md:grid-cols-3 md:gap-12" delayChildren={0.16}>
         {plans.map((plan) => (
-          <MotionItem
-            key={plan.name}
-            className="group border-t border-[#e5e0d8] pt-8"
-          >
-            <h2 className="font-serif text-2xl font-normal text-[#1a1a1a]">{plan.name}</h2>
-            <p className="mt-4 text-2xl font-light text-[#c17f59]">예시 월 {plan.monthlyFee}</p>
-            <ul className="mt-6 space-y-2 text-sm leading-7 text-[#5a5a5a]">
-              {plan.features.map((feature) => (
-                <li key={feature}>• {feature}</li>
-              ))}
-            </ul>
+          <MotionItem key={plan.name}>
+            <MotionHoverCard className="group border-t border-[#e5e0d8] pt-8 transition-shadow duration-500 hover:shadow-[0_12px_28px_rgba(26,26,26,0.05)]">
+              <h2 className="font-serif text-2xl font-normal text-[#1a1a1a]">{plan.name}</h2>
+              <p className="mt-4 text-2xl font-light text-[#c17f59]">예시 월 {plan.monthlyFee}</p>
+              <ul className="mt-6 space-y-2 text-sm leading-7 text-[#5a5a5a]">
+                {plan.features.map((feature) => (
+                  <li key={feature}>• {feature}</li>
+                ))}
+              </ul>
+            </MotionHoverCard>
           </MotionItem>
         ))}
       </MotionStagger>
 
       <MotionSection className="mt-24" delay={0.1}>
         <ConsultCtaButton
-          className="inline-flex text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-8 py-4 transition-all duration-500 hover:bg-[#9a6347]"
+          className="inline-flex text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-8 py-4 transition-all duration-500 hover:-translate-y-0.5 hover:bg-[#9a6347]"
         >
           내게 맞는 요금제 상담받기
         </ConsultCtaButton>

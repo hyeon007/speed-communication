@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useMemo, useState } from 'react';
+import { MotionSection } from '@/components/motion-presets';
 import { buildApiUrl } from '@/lib/api';
 
 type FormState = {
@@ -72,16 +73,19 @@ export default function ConsultPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
-      <h1 className="font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">무료 상담 신청</h1>
-      <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">아래 정보만 남겨주시면 24시간 내 연락드립니다.</p>
-      <p className="mt-3 text-xs leading-6 text-[#8a8a8a]">
-        최대 50만원 상당 지원 혜택은 가입 조건에 따라 달라질 수 있으며, 자세한 기준은 상담 시 안내됩니다.
-      </p>
+      <MotionSection>
+        <h1 className="font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">무료 상담 신청</h1>
+        <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">아래 정보만 남겨주시면 24시간 내 연락드립니다.</p>
+        <p className="mt-3 text-xs leading-6 text-[#8a8a8a]">
+          최대 50만원 상당 지원 혜택은 가입 조건에 따라 달라질 수 있으며, 자세한 기준은 상담 시 안내됩니다.
+        </p>
+      </MotionSection>
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-24 space-y-5 border-t border-[#e5e0d8] pt-8"
-      >
+      <MotionSection delay={0.06}>
+        <form
+          onSubmit={handleSubmit}
+          className="mt-24 space-y-5 border-t border-[#e5e0d8] pt-8"
+        >
         <label className="block text-sm text-[#5a5a5a]">
           이름
           <input
@@ -154,14 +158,15 @@ export default function ConsultPage() {
         <button
           type="submit"
           disabled={!canSubmit || isSubmitting}
-          className="mt-6 w-full text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-5 py-4 transition-all duration-500 hover:bg-[#9a6347] disabled:cursor-not-allowed disabled:bg-[#c9c4bc] disabled:text-[#8a8a8a]"
+          className="mt-6 w-full text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-5 py-4 transition-all duration-500 hover:-translate-y-0.5 hover:bg-[#9a6347] disabled:cursor-not-allowed disabled:bg-[#c9c4bc] disabled:text-[#8a8a8a]"
         >
           {isSubmitting ? '접수 중...' : '상담 신청하기'}
         </button>
         <p className="text-[11px] leading-5 text-[#8a8a8a]">
           *지원 혜택은 요금제·약정기간·번호이동 여부·제휴조건 등에 따라 상이합니다.
         </p>
-      </form>
+        </form>
+      </MotionSection>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { ConsultCtaButton } from '@/components/consult-cta-button';
-import { MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
+import { MotionHoverCard, MotionImageReveal, MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { SupportPromoNote } from '@/components/support-promo-note';
 import { appleDevices, galaxyDevices, type Device } from '@/lib/device-catalog';
 
@@ -26,49 +26,48 @@ function DeviceSection({ title, items, sectionClassName, listClassName }: Device
         delayChildren={0.12}
       >
         {items.map((device) => (
-          <MotionItem
-            key={device.name}
-            className="group border-t border-[#e5e0d8] pt-8"
-          >
-            {device.imageUrl ? (
-              <div className="relative aspect-[16/10] overflow-hidden border border-[#e5e0d8] bg-[#f5f3f0]">
-                <Image
-                  src={device.imageUrl}
-                  alt={device.name}
-                  fill
-                  sizes="(min-width: 768px) 45vw, 90vw"
-                  unoptimized={shouldBypassImageOptimizer(device.imageUrl)}
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                />
+          <MotionItem key={device.name}>
+            <MotionHoverCard className="group border-t border-[#e5e0d8] pt-8">
+              {device.imageUrl ? (
+                <MotionImageReveal className="relative aspect-[16/10] overflow-hidden border border-[#e5e0d8] bg-[#f5f3f0]">
+                  <Image
+                    src={device.imageUrl}
+                    alt={device.name}
+                    fill
+                    sizes="(min-width: 768px) 45vw, 90vw"
+                    unoptimized={shouldBypassImageOptimizer(device.imageUrl)}
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  />
+                </MotionImageReveal>
+              ) : (
+                <div className="flex aspect-[16/10] items-center justify-center border border-[#e5e0d8] bg-[#f5f3f0] px-6 text-center">
+                  <p className="text-xs leading-6 text-[#8a8a8a]">
+                    공식 이미지는 미디어 페이지에서 확인 가능합니다.
+                  </p>
+                </div>
+              )}
+              <p className="mt-5 text-xs tracking-[0.15em] uppercase text-[#c17f59]">{device.highlight}</p>
+              <h3 className="mt-2 font-serif text-2xl font-normal text-[#1a1a1a]">{device.name}</h3>
+              <p className="mt-4 text-sm leading-7 text-[#5a5a5a]">
+                지원 혜택은 조건별로 달라지며, 최대 50만원 상당 혜택 가능 여부를 상담 시점 기준으로 안내드립니다.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <ConsultCtaButton
+                  interestDevice={device.name}
+                  className="inline-flex text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-6 py-3 transition-all duration-500 hover:-translate-y-0.5 hover:bg-[#9a6347]"
+                >
+                  이 기기 상담하기
+                </ConsultCtaButton>
+                <a
+                  href={device.sourcePage}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="gallery-link text-xs tracking-[0.12em] uppercase text-[#5a5a5a]"
+                >
+                  공식 페이지 보기
+                </a>
               </div>
-            ) : (
-              <div className="flex aspect-[16/10] items-center justify-center border border-[#e5e0d8] bg-[#f5f3f0] px-6 text-center">
-                <p className="text-xs leading-6 text-[#8a8a8a]">
-                  공식 이미지는 미디어 페이지에서 확인 가능합니다.
-                </p>
-              </div>
-            )}
-            <p className="mt-5 text-xs tracking-[0.15em] uppercase text-[#c17f59]">{device.highlight}</p>
-            <h3 className="mt-2 font-serif text-2xl font-normal text-[#1a1a1a]">{device.name}</h3>
-            <p className="mt-4 text-sm leading-7 text-[#5a5a5a]">
-              지원 혜택은 조건별로 달라지며, 최대 50만원 상당 혜택 가능 여부를 상담 시점 기준으로 안내드립니다.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <ConsultCtaButton
-                interestDevice={device.name}
-                className="inline-flex text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-6 py-3 transition-all duration-500 hover:bg-[#9a6347]"
-              >
-                이 기기 상담하기
-              </ConsultCtaButton>
-              <a
-                href={device.sourcePage}
-                target="_blank"
-                rel="noreferrer"
-                className="gallery-link text-xs tracking-[0.12em] uppercase text-[#5a5a5a]"
-              >
-                공식 페이지 보기
-              </a>
-            </div>
+            </MotionHoverCard>
           </MotionItem>
         ))}
       </MotionStagger>

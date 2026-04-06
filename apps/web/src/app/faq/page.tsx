@@ -1,3 +1,5 @@
+import { MotionHoverCard, MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
+
 const faqs = [
   {
     q: '상담 신청 후 언제 연락 오나요?',
@@ -24,23 +26,23 @@ const faqs = [
 export default function FaqPage() {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
-      <header>
-        <p className="text-xs font-light tracking-[0.3em] uppercase text-[#c17f59]">FREQUENTLY ASKED QUESTIONS</p>
-        <h1 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-5xl">자주 묻는 질문</h1>
-      </header>
+      <MotionSection>
+        <header>
+          <p className="text-xs font-light tracking-[0.3em] uppercase text-[#c17f59]">FREQUENTLY ASKED QUESTIONS</p>
+          <h1 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-5xl">자주 묻는 질문</h1>
+        </header>
+      </MotionSection>
 
-      <section className="mt-24 space-y-8">
-        {faqs.map((item, index) => (
-          <article
-            key={item.q}
-            className="group border-t border-[#e5e0d8] pt-8 opacity-0 animate-fade-in-up"
-            style={{ animationDelay: `${0.3 + index * 0.15}s` }}
-          >
-            <h2 className="font-serif text-xl font-normal text-[#1a1a1a]">Q. {item.q}</h2>
-            <p className="mt-4 text-sm leading-7 text-[#5a5a5a]">A. {item.a}</p>
-          </article>
+      <MotionStagger className="mt-24 space-y-8" delayChildren={0.1}>
+        {faqs.map((item) => (
+          <MotionItem key={item.q}>
+            <MotionHoverCard className="group border-t border-[#e5e0d8] pt-8 transition-shadow duration-500 hover:shadow-[0_10px_24px_rgba(26,26,26,0.05)]">
+              <h2 className="font-serif text-xl font-normal text-[#1a1a1a]">Q. {item.q}</h2>
+              <p className="mt-4 text-sm leading-7 text-[#5a5a5a]">A. {item.a}</p>
+            </MotionHoverCard>
+          </MotionItem>
         ))}
-      </section>
+      </MotionStagger>
     </main>
   );
 }

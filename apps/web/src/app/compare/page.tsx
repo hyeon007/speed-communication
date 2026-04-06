@@ -29,8 +29,12 @@ export default function ComparePage() {
             </tr>
           </thead>
           <tbody>
-            {comparisonRows.map((row) => (
-              <tr key={row.key} className="border-b border-[#e5e0d8] text-sm text-[#5a5a5a] last:border-b-0">
+            {comparisonRows.map((row, index) => (
+              <tr
+                key={row.key}
+                className="animate-fade-in-up-fast border-b border-[#e5e0d8] text-sm text-[#5a5a5a] opacity-0 last:border-b-0"
+                style={{ animationDelay: `${0.18 + index * 0.08}s` }}
+              >
                 <th className="px-4 py-4 font-medium text-[#1a1a1a]">{row.key}</th>
                 <td className="px-4 py-4">{row.iphone}</td>
                 <td className="px-4 py-4">{row.galaxy}</td>
@@ -42,7 +46,7 @@ export default function ComparePage() {
 
       <MotionSection className="mt-24" delay={0.1}>
         <ConsultCtaButton
-          className="gallery-link inline-flex text-xs tracking-[0.15em] uppercase text-[#5a5a5a] px-8 py-4 transition-colors duration-500 hover:text-[#1a1a1a]"
+          className="gallery-link inline-flex px-8 py-4 text-xs tracking-[0.15em] uppercase text-[#5a5a5a] transition-all duration-500 hover:-translate-y-0.5 hover:text-[#1a1a1a]"
         >
           비교 결과로 상담 신청하기
         </ConsultCtaButton>
