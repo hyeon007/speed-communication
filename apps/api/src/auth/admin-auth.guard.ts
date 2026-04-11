@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ADMIN_AUTH_COOKIE_NAME, readAdminAuthCookie } from './admin-auth-cookie';
 import { AdminJwtPayload, AuthService } from './auth.service';
 
 export type AdminRequest = Request & {
@@ -18,12 +19,15 @@ export class AdminAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<AdminRequest>();
     const header = request.headers.authorization;
+    const cookieToken = readAdminAuthCookie(request);
 
-    if (!header || !header.startsWith('Bearer ')) {
-      throw new UnauthorizedException('관리자 인증 토큰이 필요합니다.');
+    let token: string | null = null;
+
+    if (header?.startsWith('Bearer ')) {
+      token = header.replace('Bearer ', '').trim();
+    } else if (cookieToken) {
+      token = cookieToken;
     }
-
-    const token = header.replace('Bearer ', '').trim();
 
     if (!token) {
       throw new UnauthorizedException('관리자 인증 토큰이 필요합니다.');
@@ -34,7 +38,9 @@ export class AdminAuthGuard implements CanActivate {
       request['admin'] = decoded;
       return true;
     } catch {
-      throw new UnauthorizedException('유효하지 않은 인증 토큰입니다.');
+      throw new UnauthorizedException(
+        `유효하지 않은 인증 토큰입니다. (${ADMIN_AUTH_COOKIE_NAME})`,
+      );
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -8,8 +8,13 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { AdminAuthGuard } from './admin-auth.guard';
 import type { AdminRequest } from './admin-auth.guard';
+import {
+  ADMIN_AUTH_COOKIE_NAME,
+  getAdminAuthCookieOptions,
+} from './admin-auth-cookie';
 import { AuthService } from './auth.service';
 import { AdminLoginDto } from './dto/admin-login.dto';
 import { AdminLoginRateLimitGuard } from './rate-limit.guard';
@@ -44,8 +49,42 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Invalid username/password' })
   @UseGuards(AdminLoginRateLimitGuard)
   @Post('login')
-  login(@Body() body: AdminLoginDto) {
-    return this.authService.login(body);
+  login(
+    @Body() body: AdminLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = this.authService.login(body);
+
+    response.cookie(
+      ADMIN_AUTH_COOKIE_NAME,
+      result.accessToken,
+      getAdminAuthCookieOptions(result.expiresInSeconds * 1000),
+    );
+
+    return result;
+  }
+
+  @ApiOperation({ summary: 'Clear the current admin session cookie' })
+  @ApiOkResponse({
+    description: 'Admin session cookie cleared',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+      },
+      required: ['success'],
+    },
+  })
+  @Post('logout')
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie(
+      ADMIN_AUTH_COOKIE_NAME,
+      getAdminAuthCookieOptions(),
+    );
+
+    return {
+      success: true,
+    };
   }
 
   @ApiOperation({ summary: 'Get currently authenticated admin profile' })
