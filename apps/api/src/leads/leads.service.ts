@@ -10,6 +10,7 @@ import { UpdateLeadStatusDto } from './dto/update-lead-status.dto';
 import { Lead } from './entities/lead.entity';
 import type { LeadStatusAudit } from './entities/lead.entity';
 import { LeadNotifierService } from './lead-notifier.service';
+import { parseSeoulDateOnlyBoundary } from './seoul-time.util';
 import { LEAD_REPOSITORY } from './repositories/lead.repository';
 import type {
   LeadActivityQuery,
@@ -22,9 +23,6 @@ import type {
   LeadTrendStats,
   LeadRepository,
 } from './repositories/lead.repository';
-
-const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const SEOUL_UTC_OFFSET_HOURS = 9;
 
 @Injectable()
 export class LeadsService {
@@ -167,7 +165,7 @@ export class LeadsService {
   }
 
   private parseStartDate(input: string): Date {
-    const parsedDate = this.parseSeoulDateBoundary(input, 0, 0, 0, 0);
+    const parsedDate = parseSeoulDateOnlyBoundary(input, 'start');
 
     if (parsedDate) {
       return parsedDate;
@@ -177,38 +175,12 @@ export class LeadsService {
   }
 
   private parseEndDate(input: string): Date {
-    const parsedDate = this.parseSeoulDateBoundary(input, 23, 59, 59, 999);
+    const parsedDate = parseSeoulDateOnlyBoundary(input, 'end');
 
     if (parsedDate) {
       return parsedDate;
     }
 
     return new Date(input);
-  }
-
-  private parseSeoulDateBoundary(
-    input: string,
-    hours: number,
-    minutes: number,
-    seconds: number,
-    milliseconds: number,
-  ): Date | null {
-    if (!DATE_ONLY_PATTERN.test(input)) {
-      return null;
-    }
-
-    const [year, month, day] = input.split('-').map(Number);
-
-    return new Date(
-      Date.UTC(
-        year,
-        month - 1,
-        day,
-        hours - SEOUL_UTC_OFFSET_HOURS,
-        minutes,
-        seconds,
-        milliseconds,
-      ),
-    );
   }
 }
