@@ -12,6 +12,7 @@ import { AdminAuthGuard } from './admin-auth.guard';
 import type { AdminRequest } from './admin-auth.guard';
 import { AuthService } from './auth.service';
 import { AdminLoginDto } from './dto/admin-login.dto';
+import { AdminLoginRateLimitGuard } from './rate-limit.guard';
 
 @ApiTags('Admin Auth')
 @Controller('api/v1/admin/auth')
@@ -41,6 +42,7 @@ export class AuthController {
     },
   })
   @ApiUnauthorizedResponse({ description: 'Invalid username/password' })
+  @UseGuards(AdminLoginRateLimitGuard)
   @Post('login')
   login(@Body() body: AdminLoginDto) {
     return this.authService.login(body);

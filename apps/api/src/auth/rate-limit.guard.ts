@@ -111,6 +111,21 @@ export class PublicLeadRateLimitGuard extends BaseRateLimitGuard {
 }
 
 @Injectable()
+export class AdminLoginRateLimitGuard extends BaseRateLimitGuard {
+  constructor() {
+    super({
+      scope: 'admin-login',
+      maxRequests: 5,
+      windowMs: 60_000,
+    });
+  }
+
+  protected getIdentifier(request: Request): string {
+    return this.getRequestIp(request);
+  }
+}
+
+@Injectable()
 export class AdminWriteRateLimitGuard extends BaseRateLimitGuard {
   constructor() {
     super({

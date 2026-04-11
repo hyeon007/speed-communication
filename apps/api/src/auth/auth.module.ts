@@ -7,6 +7,7 @@ import { AdminBulkWriteGuard } from './admin-bulk-write.guard';
 import { AdminWriteGuard } from './admin-write.guard';
 import {
   AdminBulkWriteRateLimitGuard,
+  AdminLoginRateLimitGuard,
   AdminWriteRateLimitGuard,
   PublicLeadRateLimitGuard,
 } from './rate-limit.guard';
@@ -44,6 +45,7 @@ if (
     AdminWriteGuard,
     AdminBulkWriteGuard,
     PublicLeadRateLimitGuard,
+    AdminLoginRateLimitGuard,
     AdminWriteRateLimitGuard,
     AdminBulkWriteRateLimitGuard,
   ],
@@ -53,6 +55,7 @@ if (
     AdminWriteGuard,
     AdminBulkWriteGuard,
     PublicLeadRateLimitGuard,
+    AdminLoginRateLimitGuard,
     AdminWriteRateLimitGuard,
     AdminBulkWriteRateLimitGuard,
   ],

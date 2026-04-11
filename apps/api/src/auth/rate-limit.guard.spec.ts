@@ -2,6 +2,7 @@ import { ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import type { Request } from 'express';
 import {
   AdminBulkWriteRateLimitGuard,
+  AdminLoginRateLimitGuard,
   AdminWriteRateLimitGuard,
   PublicLeadRateLimitGuard,
 } from './rate-limit.guard';
@@ -125,5 +126,15 @@ describe('RateLimit guards', () => {
     expectRateLimitError(() =>
       guard.canActivate(createExecutionContext({ adminSub: 'admin:editor' })),
     );
+  });
+
+  it('limits admin login attempts per requester IP', () => {
+    const guard = new AdminLoginRateLimitGuard();
+
+    for (let index = 0; index < 5; index += 1) {
+      expect(guard.canActivate(createExecutionContext())).toBe(true);
+    }
+
+    expectRateLimitError(() => guard.canActivate(createExecutionContext()));
   });
 });

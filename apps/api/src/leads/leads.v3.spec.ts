@@ -15,6 +15,7 @@ function toRecord(value: unknown): Record<string, unknown> {
 describe('Admin Leads v3 (integration)', () => {
   let app: INestApplication<App>;
   const originalRateLimitTrustProxy = process.env.RATE_LIMIT_TRUST_PROXY_HEADER;
+  let loginRequestSequence = 0;
 
   beforeAll(async () => {
     process.env.RATE_LIMIT_TRUST_PROXY_HEADER = 'true';
@@ -41,8 +42,12 @@ describe('Admin Leads v3 (integration)', () => {
   });
 
   async function login(username: string, password: string): Promise<string> {
+    const forwardedIp = `198.51.100.${100 + loginRequestSequence}`;
+    loginRequestSequence += 1;
+
     const response = await request(app.getHttpServer())
       .post('/api/v1/admin/auth/login')
+      .set('x-forwarded-for', forwardedIp)
       .send({
         username,
         password,
@@ -450,6 +455,30 @@ describe('Admin Leads v3 (integration)', () => {
         phone: '01055559999',
         interestDevice: 'iPhone 16',
         contactTime: '오후 5시',
+      })
+      .expect(429);
+  });
+
+  it('enforces admin login rate limits per IP', async () => {
+    const forwardedIp = '203.0.113.200';
+
+    for (let index = 0; index < 5; index += 1) {
+      await request(app.getHttpServer())
+        .post('/api/v1/admin/auth/login')
+        .set('x-forwarded-for', forwardedIp)
+        .send({
+          username: 'admin',
+          password: 'wrong-password',
+        })
+        .expect(401);
+    }
+
+    await request(app.getHttpServer())
+      .post('/api/v1/admin/auth/login')
+      .set('x-forwarded-for', forwardedIp)
+      .send({
+        username: 'admin',
+        password: 'wrong-password',
       })
       .expect(429);
   });
