@@ -16,6 +16,11 @@ import {
   LeadListResult,
   LeadRepository,
 } from './lead.repository';
+import {
+  formatSeoulDateKey,
+  getCurrentSeoulDateRange,
+  getSeoulRecentDateWindow,
+} from '../seoul-time.util';
 
 @Injectable()
 export class InMemoryLeadRepository implements LeadRepository {
@@ -161,10 +166,8 @@ export class InMemoryLeadRepository implements LeadRepository {
   }
 
   getStats(): Promise<LeadStats> {
-    const now = new Date();
-    const startOfToday = new Date(now);
-    startOfToday.setHours(0, 0, 0, 0);
-    const last7DaysStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const { start: startOfToday, end: endOfToday } = getCurrentSeoulDateRange();
+    const { start: last7DaysStart } = getSeoulRecentDateWindow(7);
 
     const total = this.leads.length;
     const newCount = this.leads.filter((lead) => lead.status === 'new').length;
@@ -175,10 +178,10 @@ export class InMemoryLeadRepository implements LeadRepository {
       (lead) => lead.status === 'completed',
     ).length;
     const todayCount = this.leads.filter(
-      (lead) => lead.createdAt >= startOfToday,
+      (lead) => lead.createdAt >= startOfToday && lead.createdAt <= endOfToday,
     ).length;
     const last7DaysCount = this.leads.filter(
-      (lead) => lead.createdAt >= last7DaysStart,
+      (lead) => lead.createdAt >= last7DaysStart && lead.createdAt <= endOfToday,
     ).length;
 
     return Promise.resolve({
@@ -193,18 +196,8 @@ export class InMemoryLeadRepository implements LeadRepository {
 
   getTrend(days: number): Promise<LeadTrendStats> {
     const safeDays = Math.max(1, Math.min(days, 90));
-    const endDateObj = new Date();
-    endDateObj.setHours(23, 59, 59, 999);
-
-    const startDateObj = new Date(endDateObj);
-    startDateObj.setDate(startDateObj.getDate() - (safeDays - 1));
-    startDateObj.setHours(0, 0, 0, 0);
-
-    const dateKeys = Array.from({ length: safeDays }, (_, index) => {
-      const date = new Date(startDateObj);
-      date.setDate(startDateObj.getDate() + index);
-      return date.toISOString().slice(0, 10);
-    });
+    const { start: startDateObj, end: endDateObj, dateKeys } =
+      getSeoulRecentDateWindow(safeDays);
 
     const dailyMap = new Map<string, number>(dateKeys.map((key) => [key, 0]));
 
@@ -213,7 +206,7 @@ export class InMemoryLeadRepository implements LeadRepository {
     );
 
     inRange.forEach((lead) => {
-      const key = lead.createdAt.toISOString().slice(0, 10);
+      const key = formatSeoulDateKey(lead.createdAt);
       if (dailyMap.has(key)) {
         dailyMap.set(key, (dailyMap.get(key) ?? 0) + 1);
       }
@@ -221,9 +214,8 @@ export class InMemoryLeadRepository implements LeadRepository {
 
     return Promise.resolve({
       days: safeDays,
-      startDate: dateKeys[0] ?? startDateObj.toISOString().slice(0, 10),
-      endDate:
-        dateKeys[dateKeys.length - 1] ?? endDateObj.toISOString().slice(0, 10),
+      startDate: dateKeys[0],
+      endDate: dateKeys[dateKeys.length - 1],
       daily: dateKeys.map((date) => ({
         date,
         count: dailyMap.get(date) ?? 0,
