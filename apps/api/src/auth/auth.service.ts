@@ -50,21 +50,27 @@ export class AuthService {
     const expiresInSeconds = Number(
       process.env.JWT_EXPIRES_IN_SECONDS ?? 43200,
     );
+    const safeExpiresInSeconds = Number.isFinite(expiresInSeconds)
+      ? expiresInSeconds
+      : 43200;
 
-    const token = this.jwtService.sign({
-      sub: `admin:${role}:${input.username}`,
-      role,
-      username: input.username,
-    });
+    const token = this.jwtService.sign(
+      {
+        sub: `admin:${role}:${input.username}`,
+        role,
+        username: input.username,
+      },
+      {
+        expiresIn: safeExpiresInSeconds,
+      },
+    );
 
     return {
       accessToken: token,
       tokenType: 'Bearer',
       role,
       username: input.username,
-      expiresInSeconds: Number.isFinite(expiresInSeconds)
-        ? expiresInSeconds
-        : 43200,
+      expiresInSeconds: safeExpiresInSeconds,
     };
   }
 
