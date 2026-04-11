@@ -43,6 +43,7 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change-me-please}
       - JWT_SECRET=${JWT_SECRET:-replace-this-secret-in-production}
       - JWT_EXPIRES_IN_SECONDS=${JWT_EXPIRES_IN_SECONDS:-43200}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
     ports:
       - '3001:3001'
     depends_on:

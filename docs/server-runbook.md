@@ -7,7 +7,7 @@
 - Docker Engine + Docker Compose plugin 설치
 - `/opt/sp` 디렉토리 생성
 - 서버 `.env` 파일 준비 (`/opt/sp/.env`)  
-  - `DATABASE_URL`, `JWT_SECRET`, `ADMIN_*`, `LEAD_NOTIFY_EMAIL_SMTP_*` 등은 서버에서만 관리
+  - `DATABASE_URL`, `JWT_SECRET`, `ADMIN_*`, `CORS_ALLOWED_ORIGINS`, `LEAD_NOTIFY_EMAIL_SMTP_*` 등은 서버에서만 관리
 - TLS 파일 준비 (`/opt/sp/infra/nginx/ssl/fullchain.pem`, `/opt/sp/infra/nginx/ssl/privkey.pem`)
 
 GitHub Actions 원격 배포를 사용할 경우 아래 Secrets가 필요합니다.
