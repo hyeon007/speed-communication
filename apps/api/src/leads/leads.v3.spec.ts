@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../app.module';
+import { formatSeoulDateKey } from './seoul-time.util';
 
 function toRecord(value: unknown): Record<string, unknown> {
   if (typeof value !== 'object' || value === null) {
@@ -75,6 +76,39 @@ describe('Admin Leads v3 (integration)', () => {
   async function loginAsOperator(): Promise<string> {
     return login('operator', 'change-me-operator');
   }
+
+  it('supports cookie-based admin auth and logout', async () => {
+    const agent = request.agent(app.getHttpServer());
+
+    const loginResponse = await agent
+      .post('/api/v1/admin/auth/login')
+      .set('x-forwarded-for', '198.51.100.210')
+      .send({
+        username: 'admin',
+        password: 'change-me-please',
+      })
+      .expect(201);
+
+    expect(loginResponse.headers['set-cookie']?.join(';') ?? '').toContain(
+      'sp_admin_access_token=',
+    );
+
+    const meResponse = await agent.get('/api/v1/admin/auth/me').expect(200);
+    const meBody = toRecord(meResponse.body as unknown);
+
+    expect(meBody['role']).toBe('editor');
+    expect(meBody['username']).toBe('admin');
+
+    const logoutResponse = await agent
+      .post('/api/v1/admin/auth/logout')
+      .expect(201);
+
+    expect(logoutResponse.headers['set-cookie']?.join(';') ?? '').toContain(
+      'sp_admin_access_token=;',
+    );
+
+    await agent.get('/api/v1/admin/auth/me').expect(401);
+  });
 
   it('returns recentNewCount, supports bulk status update, and exports CSV', async () => {
     const token = await loginAsEditor();
@@ -252,12 +286,14 @@ describe('Admin Leads v3 (integration)', () => {
       .expect(200);
 
     expect(csvResponse.headers['content-type']).toContain('text/csv');
+    expect(csvResponse.text.startsWith('\uFEFF')).toBe(true);
     expect(csvResponse.text).toContain(
       'id,name,phone,interestDevice,contactTime,status,memo,createdAt',
     );
     expect(csvResponse.text).toContain('"completed"');
     expect(csvResponse.text).toContain('Line ""A""\\nLine B');
     expect(activityCsvResponse.headers['content-type']).toContain('text/csv');
+    expect(activityCsvResponse.text.startsWith('\uFEFF')).toBe(true);
     expect(activityCsvResponse.text).toContain(
       'auditId,leadId,leadName,leadPhone,previousStatus,nextStatus,changedBy,changedAt',
     );
@@ -311,7 +347,7 @@ describe('Admin Leads v3 (integration)', () => {
       .send({ status: 'completed' })
       .expect(200);
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = formatSeoulDateKey(new Date());
 
     const combinedFilter = await request(app.getHttpServer())
       .get(

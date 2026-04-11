@@ -61,6 +61,10 @@ export class LeadsController {
     return `"${escaped}"`;
   }
 
+  private prependUtf8Bom(content: string): string {
+    return `\uFEFF${content}`;
+  }
+
   private toCsv(leads: Lead[]): string {
     const header = [
       'id',
@@ -88,7 +92,7 @@ export class LeadsController {
         .join(','),
     );
 
-    return [header.join(','), ...rows].join('\n');
+    return this.prependUtf8Bom([header.join(','), ...rows].join('\n'));
   }
 
   private toActivityCsv(
@@ -131,7 +135,7 @@ export class LeadsController {
         .join(','),
     );
 
-    return [header.join(','), ...rows].join('\n');
+    return this.prependUtf8Bom([header.join(','), ...rows].join('\n'));
   }
 
   @ApiOperation({ summary: 'Create public lead inquiry' })
