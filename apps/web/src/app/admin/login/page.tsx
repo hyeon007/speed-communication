@@ -2,8 +2,12 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { clearAdminToken, getAdminToken, setAdminToken } from '@/lib/admin-auth';
-import { buildApiUrl } from '@/lib/api';
+import {
+  adminFetch,
+  clearAdminSession,
+  clearAdminToken,
+  hasAdminSession,
+} from '@/lib/admin-auth';
 
 function toMessage(input: unknown): string {
   if (Array.isArray(input)) {
@@ -25,10 +29,24 @@ export default function AdminLoginPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = getAdminToken();
-    if (token) {
-      router.replace('/admin/leads');
-    }
+    let isMounted = true;
+
+    void hasAdminSession().then((authenticated) => {
+      if (!isMounted) {
+        return;
+      }
+
+      if (authenticated) {
+        router.replace('/admin/leads');
+        return;
+      }
+
+      clearAdminToken();
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -42,7 +60,7 @@ export default function AdminLoginPage() {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(buildApiUrl('/api/v1/admin/auth/login'), {
+      const response = await adminFetch('/api/v1/admin/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,17 +69,16 @@ export default function AdminLoginPage() {
       });
 
       const payload = (await response.json()) as {
-        accessToken?: string;
         message?: unknown;
       };
 
-      if (!response.ok || !payload.accessToken) {
-        clearAdminToken();
+      if (!response.ok) {
+        await clearAdminSession();
         setErrorMessage(toMessage(payload.message));
         return;
       }
 
-      setAdminToken(payload.accessToken);
+      clearAdminToken();
       router.push('/admin/leads');
     } catch {
       setErrorMessage('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
