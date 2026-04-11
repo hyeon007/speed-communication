@@ -23,6 +23,9 @@ import type {
   LeadRepository,
 } from './repositories/lead.repository';
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const SEOUL_UTC_OFFSET_HOURS = 9;
+
 @Injectable()
 export class LeadsService {
   constructor(
@@ -164,18 +167,48 @@ export class LeadsService {
   }
 
   private parseStartDate(input: string): Date {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-      return new Date(`${input}T00:00:00.000Z`);
+    const parsedDate = this.parseSeoulDateBoundary(input, 0, 0, 0, 0);
+
+    if (parsedDate) {
+      return parsedDate;
     }
 
     return new Date(input);
   }
 
   private parseEndDate(input: string): Date {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-      return new Date(`${input}T23:59:59.999Z`);
+    const parsedDate = this.parseSeoulDateBoundary(input, 23, 59, 59, 999);
+
+    if (parsedDate) {
+      return parsedDate;
     }
 
     return new Date(input);
+  }
+
+  private parseSeoulDateBoundary(
+    input: string,
+    hours: number,
+    minutes: number,
+    seconds: number,
+    milliseconds: number,
+  ): Date | null {
+    if (!DATE_ONLY_PATTERN.test(input)) {
+      return null;
+    }
+
+    const [year, month, day] = input.split('-').map(Number);
+
+    return new Date(
+      Date.UTC(
+        year,
+        month - 1,
+        day,
+        hours - SEOUL_UTC_OFFSET_HOURS,
+        minutes,
+        seconds,
+        milliseconds,
+      ),
+    );
   }
 }
