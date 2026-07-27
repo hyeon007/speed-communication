@@ -52,7 +52,7 @@ export function HeroShowcase() {
         transition={reduceMotion ? undefined : { duration: 1, delay: 0.7 }}
         className="mt-12 flex flex-wrap gap-4"
       >
-        {['당일 콜백', '요금제 최적화', '가족결합 설계', '조건부 최대 50만원'].map((text, index) => (
+        {['당일 콜백', '요금제 최적화', '가족결합 설계', '당일 정책 확인'].map((text, index) => (
           <motion.span
             key={text}
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}

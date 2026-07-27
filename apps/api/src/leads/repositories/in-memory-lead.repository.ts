@@ -35,6 +35,8 @@ export class InMemoryLeadRepository implements LeadRepository {
       name: input.name,
       phone: input.phone,
       interestDevice: input.interestDevice,
+      consultationType: input.consultationType ?? null,
+      preferredCarrier: input.preferredCarrier ?? null,
       contactTime: input.contactTime,
       memo: null,
       status: 'new',
@@ -341,6 +343,8 @@ export class InMemoryLeadRepository implements LeadRepository {
             lead.name,
             lead.phone,
             lead.interestDevice,
+            lead.consultationType ?? '',
+            lead.preferredCarrier ?? '',
             lead.contactTime,
             lead.memo ?? '',
           ]

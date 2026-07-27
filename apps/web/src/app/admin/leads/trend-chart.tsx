@@ -17,7 +17,7 @@ export function TrendChart({
     <section className="border-t border-[#e5e0d8] pt-8 animate-fade-in-up-fast">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-[#1a1a1a]">문의 접수 추세</p>
+          <p className="text-sm text-[#1a1a1a]">상담 신청 접수 추세</p>
           <p className="mt-1 text-xs text-[#8a8a8a]">
             {trend.startDate || '-'} ~ {trend.endDate || '-'}
           </p>

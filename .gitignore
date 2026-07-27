@@ -13,6 +13,7 @@ out/
 .env
 .env.local
 .env.*.local
+.vercel
 
 # IDE
 .vscode/
@@ -39,3 +40,4 @@ coverage/
 .cache/
 temp/
 tmp/
+.env*

@@ -5,6 +5,13 @@ function getDefaultApiOrigin(): string {
     return 'http://localhost:3001';
   }
 
+  if (
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1'
+  ) {
+    return '';
+  }
+
   const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
   return `${protocol}//${window.location.hostname}:3001`;
 }
@@ -18,4 +25,20 @@ export function buildApiUrl(path: string): string {
   }
 
   return `${apiOrigin.replace(/\/$/, '')}${normalizedPath}`;
+}
+
+export function isLeadSubmissionConfigured(): boolean {
+  if (CONFIGURED_API_ORIGIN) {
+    return true;
+  }
+
+  if (typeof window === 'undefined') {
+    return true;
+  }
+
+  const { hostname } = window.location;
+  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isVercelPreview = hostname.endsWith('.vercel.app');
+
+  return isLocalHost || !isVercelPreview;
 }

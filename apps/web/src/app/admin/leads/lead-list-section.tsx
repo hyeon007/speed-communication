@@ -1,5 +1,7 @@
 import {
+  formatConsultationType,
   formatKoreanDateTime,
+  formatPreferredCarrier,
   formatStatus,
   type Lead,
   type LeadStatus,
@@ -86,6 +88,8 @@ export function LeadListSection({
           <div className="mt-4 grid gap-2 text-sm text-[#5a5a5a] md:grid-cols-2">
             <p>관심 기기: {lead.interestDevice}</p>
             <p>연락 가능 시간: {lead.contactTime}</p>
+            <p>가입 유형: {formatConsultationType(lead.consultationType)}</p>
+            <p>희망 통신사: {formatPreferredCarrier(lead.preferredCarrier)}</p>
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -148,7 +152,7 @@ export function LeadListSection({
                 </ul>
               ) : (
                 <p className="mt-2 text-xs text-[#8a8a8a]">
-                  기록된 상태 변경 이력이 없습니다.
+                  기록된 후속 처리 이력이 없습니다.
                 </p>
               )
             ) : (
@@ -166,7 +170,7 @@ export function LeadListSection({
               rows={3}
               disabled={!canWrite}
               className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-3 py-2 text-sm text-[#1a1a1a] outline-none ring-[#c17f59] focus:ring"
-              placeholder="상담 메모를 입력하세요"
+              placeholder="후속 연락 메모를 입력하세요"
             />
             <button
               type="button"
@@ -182,7 +186,7 @@ export function LeadListSection({
 
       {!leads.length ? (
         <p className="border-t border-[#e5e0d8] pt-8 text-sm text-[#8a8a8a]">
-          등록된 문의가 없습니다.
+          접수된 상담 신청이 없습니다.
         </p>
       ) : null}
 

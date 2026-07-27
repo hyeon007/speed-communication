@@ -23,8 +23,8 @@ function toMessage(input: unknown): string {
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('change-me-please');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -91,10 +91,7 @@ export default function AdminLoginPage() {
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-6 py-16">
       <section className="border-t border-[#e5e0d8] p-8">
         <h1 className="font-serif text-3xl font-normal leading-tight text-[#1a1a1a]">관리자 로그인</h1>
-        <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">관리자 문의 목록을 확인하려면 로그인하세요.</p>
-        <p className="mt-2 text-xs text-[#8a8a8a]">
-          기본 계정: 편집(admin / change-me-please), 읽기 전용(viewer / change-me-viewer)
-        </p>
+        <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">관리자 접수 목록을 확인하려면 로그인하세요.</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <label className="block text-sm text-[#5a5a5a]">
@@ -103,6 +100,7 @@ export default function AdminLoginPage() {
               name="username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
+              placeholder="아이디를 입력하세요"
               className="mt-2 w-full rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-4 py-3 text-[#1a1a1a] outline-none ring-[#c17f59] focus:ring"
               required
             />
@@ -115,6 +113,7 @@ export default function AdminLoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              placeholder="비밀번호를 입력하세요"
               className="mt-2 w-full rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-4 py-3 text-[#1a1a1a] outline-none ring-[#c17f59] focus:ring"
               required
             />

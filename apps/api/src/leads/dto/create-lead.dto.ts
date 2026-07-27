@@ -1,5 +1,16 @@
-import { IsNotEmpty, IsString, Length, Matches } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import type {
+  ConsultationType,
+  PreferredCarrier,
+} from '../entities/lead.entity';
 
 export class CreateLeadDto {
   @ApiProperty({ minLength: 2, maxLength: 40, example: '홍길동' })
@@ -17,6 +28,22 @@ export class CreateLeadDto {
   @IsNotEmpty()
   @Length(2, 80)
   interestDevice!: string;
+
+  @ApiPropertyOptional({
+    enum: ['number_transfer', 'device_change', 'new_subscription', 'undecided'],
+    example: 'number_transfer',
+  })
+  @IsOptional()
+  @IsIn(['number_transfer', 'device_change', 'new_subscription', 'undecided'])
+  consultationType?: ConsultationType;
+
+  @ApiPropertyOptional({
+    enum: ['SKT', 'KT', 'LGU+', 'undecided'],
+    example: 'KT',
+  })
+  @IsOptional()
+  @IsIn(['SKT', 'KT', 'LGU+', 'undecided'])
+  preferredCarrier?: PreferredCarrier;
 
   @ApiProperty({ minLength: 2, maxLength: 40, example: '오후 7시' })
   @IsString()

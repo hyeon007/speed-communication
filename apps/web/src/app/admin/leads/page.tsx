@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MotionSection } from '@/components/motion-presets';
 import { adminFetch, clearAdminSession, clearAdminToken } from '@/lib/admin-auth';
@@ -185,7 +186,7 @@ export default function AdminLeadsPage() {
         setErrorMessage(
           'message' in payload && payload.message
             ? payload.message
-            : '문의 목록을 불러오지 못했습니다.',
+            : '접수 목록을 불러오지 못했습니다.',
         );
         return;
       }
@@ -271,7 +272,7 @@ export default function AdminLeadsPage() {
         setErrorMessage(
           'message' in payload && payload.message
             ? payload.message
-            : '문의 통계를 불러오지 못했습니다.',
+            : '접수 통계를 불러오지 못했습니다.',
         );
         return;
       }
@@ -298,7 +299,7 @@ export default function AdminLeadsPage() {
         setErrorMessage(
           'message' in payload && payload.message
             ? payload.message
-            : '문의 추세 통계를 불러오지 못했습니다.',
+            : '접수 추세 통계를 불러오지 못했습니다.',
         );
         return;
       }
@@ -562,7 +563,7 @@ export default function AdminLeadsPage() {
       fetchLeads(query),
     ])
       .catch(() => {
-        setErrorMessage('네트워크 오류로 문의 목록을 불러오지 못했습니다.');
+        setErrorMessage('네트워크 오류로 접수 목록을 불러오지 못했습니다.');
       })
       .finally(() => {
         setIsLoading(false);
@@ -707,7 +708,7 @@ export default function AdminLeadsPage() {
 
       if ((payload.notFoundIds?.length ?? 0) > 0) {
         setErrorMessage(
-          `일부 문의는 찾지 못했습니다: ${payload.notFoundIds?.join(', ') ?? ''}`,
+          `일부 접수 건은 찾지 못했습니다: ${payload.notFoundIds?.join(', ') ?? ''}`,
         );
       }
 
@@ -916,10 +917,10 @@ export default function AdminLeadsPage() {
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl font-normal leading-tight text-[#1a1a1a]">관리자 문의 목록</h1>
-          <p className="mt-2 text-sm text-[#5a5a5a]">총 {meta.count}건의 문의가 있습니다.</p>
+          <h1 className="font-serif text-3xl font-normal leading-tight text-[#1a1a1a]">관리자 접수 목록</h1>
+          <p className="mt-2 text-sm text-[#5a5a5a]">총 {meta.count}건의 상담 신청이 접수되어 있습니다.</p>
           <p className="mt-1 text-xs text-[#8a8a8a]">
-            최근 24시간 신규 문의 {meta.recentNewCount}건
+            최근 24시간 신규 접수 {meta.recentNewCount}건
           </p>
           {adminRole ? (
             <p className="mt-1 text-xs text-[#8a8a8a]">
@@ -933,6 +934,12 @@ export default function AdminLeadsPage() {
           ) : null}
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/devices"
+            className="rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-5 py-2 text-sm text-[#5a5a5a] transition hover:bg-[#f5f3f0]"
+          >
+            기기 관리
+          </Link>
           <button
             type="button"
             onClick={downloadCsv}
@@ -958,7 +965,7 @@ export default function AdminLeadsPage() {
       ) : null}
 
       {isLoading ? (
-        <p className="mt-24 text-sm text-[#5a5a5a] animate-fade-in-up-fast">문의 목록을 불러오는 중...</p>
+        <p className="mt-24 text-sm text-[#5a5a5a] animate-fade-in-up-fast">접수 목록을 불러오는 중...</p>
       ) : (
         <MotionSection className="mt-24 space-y-8" delay={0.02}>
           <StatsOverview stats={stats} />

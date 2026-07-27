@@ -1,11 +1,33 @@
 export type Device = {
+  slug: string;
   name: string;
   highlight: string;
   imageUrl?: string;
   sourcePage: string;
+  description?: string;
+  colors?: string[];
+  storageOptions?: string[];
+  highlights?: string[];
 };
 
-export const appleDevices: Device[] = [
+type StaticDevice = Omit<Device, 'slug'>;
+
+function createSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\+/g, ' plus ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function withSlugs(devices: StaticDevice[]): Device[] {
+  return devices.map((device) => ({
+    ...device,
+    slug: createSlug(device.name),
+  }));
+}
+
+export const appleDevices: Device[] = withSlugs([
   {
     name: 'iPhone 17 Pro',
     highlight: '최신 프로 성능·카메라 라인',
@@ -108,9 +130,9 @@ export const appleDevices: Device[] = [
     imageUrl: '/images/devices/iphone-14-pro.jpg',
     sourcePage: 'https://www.apple.com/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/',
   },
-];
+]);
 
-export const galaxyDevices: Device[] = [
+export const galaxyDevices: Device[] = withSlugs([
   {
     name: 'Galaxy S26 Ultra',
     highlight: '최신 울트라 플래그십',
@@ -155,4 +177,10 @@ export const galaxyDevices: Device[] = [
     imageUrl: '/images/devices/galaxy-z-trifold.jpg',
     sourcePage: 'https://news.samsung.com/us/samsung-introducing-galaxy-z-trifold-shape-whats-next-mobile-innovation',
   },
-];
+]);
+
+export const fallbackDevices = [...appleDevices, ...galaxyDevices];
+
+export function findFallbackDevice(slug: string): Device | undefined {
+  return fallbackDevices.find((device) => device.slug === slug);
+}

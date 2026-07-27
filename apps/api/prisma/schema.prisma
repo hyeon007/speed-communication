@@ -13,16 +13,29 @@ enum LeadStatus {
   completed
 }
 
+enum DeviceBrand {
+  apple
+  samsung
+}
+
+enum DevicePublicationStatus {
+  draft
+  published
+  archived
+}
+
 model Lead {
-  id             Int        @id @default(autoincrement())
-  name           String
-  phone          String
-  interestDevice String
-  contactTime    String
-  memo           String?
-  status         LeadStatus @default(new)
-  createdAt      DateTime   @default(now())
-  statusAudits   LeadStatusAudit[]
+  id               Int               @id @default(autoincrement())
+  name             String
+  phone            String
+  interestDevice   String
+  consultationType String?
+  preferredCarrier String?
+  contactTime      String
+  memo             String?
+  status           LeadStatus        @default(new)
+  createdAt        DateTime          @default(now())
+  statusAudits     LeadStatusAudit[]
 
   @@index([status])
   @@index([createdAt])
@@ -44,4 +57,27 @@ model LeadStatusAudit {
   @@index([nextStatus, changedAt])
   @@index([leadId, changedAt])
   @@map("lead_status_audits")
+}
+
+model Device {
+  id             Int                     @id @default(autoincrement())
+  slug           String                  @unique
+  brand          DeviceBrand
+  name           String
+  tagline        String
+  description    String
+  imageUrl       String?
+  sourceUrl      String?
+  colors         String[]
+  storageOptions String[]
+  highlights     String[]
+  status         DevicePublicationStatus @default(draft)
+  sortOrder      Int                     @default(0)
+  releasedAt     DateTime?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+
+  @@index([status, sortOrder])
+  @@index([brand, status, sortOrder])
+  @@map("devices")
 }

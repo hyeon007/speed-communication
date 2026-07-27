@@ -63,7 +63,7 @@ export function ActivityPanel({
         <div>
           <p className="text-sm text-[#1a1a1a]">최근 활동</p>
           <p className="mt-1 text-xs text-[#8a8a8a]">
-            상태 변경 이력을 조건별로 조회하고 CSV로 내려받을 수 있습니다.
+            접수 후속 처리 이력을 조건별로 조회하고 CSV로 내려받을 수 있습니다.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export function ActivityPanel({
         <input
           value={activityChangedByDraft}
           onChange={(event) => onActivityChangedByChange(event.target.value)}
-          placeholder="변경자(admin 등)"
+          placeholder="변경자"
           className="rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-3 py-2 text-sm text-[#1a1a1a] outline-none ring-[#c17f59] focus:ring"
         />
 
@@ -181,7 +181,7 @@ export function ActivityPanel({
                 {formatStatus(item.nextStatus)}
               </p>
               <p className="mt-1 text-[#8a8a8a]">
-                문의 #{item.leadId} · 변경자: {item.changedBy} ·{' '}
+                접수 #{item.leadId} · 변경자: {item.changedBy} ·{' '}
                 {formatKoreanDateTime(item.changedAt)}
               </p>
             </li>

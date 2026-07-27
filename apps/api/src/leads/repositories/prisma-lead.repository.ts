@@ -34,6 +34,8 @@ export class PrismaLeadRepository implements LeadRepository {
         name: input.name,
         phone: input.phone,
         interestDevice: input.interestDevice,
+        consultationType: input.consultationType ?? null,
+        preferredCarrier: input.preferredCarrier ?? null,
         contactTime: input.contactTime,
         memo: null,
       },
@@ -401,6 +403,18 @@ export class PrismaLeadRepository implements LeadRepository {
               },
               {
                 interestDevice: {
+                  contains: query.search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                consultationType: {
+                  contains: query.search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                preferredCarrier: {
                   contains: query.search,
                   mode: 'insensitive',
                 },

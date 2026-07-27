@@ -12,19 +12,56 @@ import {
   PublicLeadRateLimitGuard,
 } from './rate-limit.guard';
 
-const jwtExpiresInSeconds = Number(process.env.JWT_EXPIRES_IN_SECONDS ?? 43200);
-const jwtSecret = process.env.JWT_SECRET ?? 'replace-this-secret-in-production';
-const isProduction = process.env.NODE_ENV === 'production';
+const DEFAULT_JWT_SECRET = 'replace-this-secret-in-production';
+const DEFAULT_ADMIN_PASSWORDS = new Set([
+  'change-me-please',
+  'change-me-operator',
+  'change-me-viewer',
+]);
 
-if (
-  isProduction &&
-  (jwtSecret === 'replace-this-secret-in-production' ||
-    process.env.JWT_SECRET === undefined)
-) {
-  throw new Error(
-    'Production mode requires a non-default JWT_SECRET environment variable.',
+function isUnsetOrDefaultPassword(value: string | undefined): boolean {
+  return (
+    value === undefined ||
+    value.trim().length === 0 ||
+    DEFAULT_ADMIN_PASSWORDS.has(value)
   );
 }
+
+export function assertProductionAuthConfiguration(
+  env: NodeJS.ProcessEnv = process.env,
+): void {
+  if (env.NODE_ENV !== 'production') {
+    return;
+  }
+
+  if (env.JWT_SECRET === undefined || env.JWT_SECRET === DEFAULT_JWT_SECRET) {
+    throw new Error(
+      'Production mode requires a non-default JWT_SECRET environment variable.',
+    );
+  }
+
+  const passwordSettings = [
+    ['ADMIN_PASSWORD', env.ADMIN_PASSWORD],
+    ['ADMIN_EDITOR_PASSWORD', env.ADMIN_EDITOR_PASSWORD ?? env.ADMIN_PASSWORD],
+    ['ADMIN_OPERATOR_PASSWORD', env.ADMIN_OPERATOR_PASSWORD],
+    ['ADMIN_VIEWER_PASSWORD', env.ADMIN_VIEWER_PASSWORD],
+  ] as const;
+
+  const insecureSettings = passwordSettings
+    .filter(([, value]) => isUnsetOrDefaultPassword(value))
+    .map(([name]) => name);
+
+  if (insecureSettings.length > 0) {
+    throw new Error(
+      `Production mode requires non-default administrator passwords: ${insecureSettings.join(', ')}.`,
+    );
+  }
+}
+
+assertProductionAuthConfiguration();
+
+const jwtExpiresInSeconds = Number(process.env.JWT_EXPIRES_IN_SECONDS ?? 43200);
+const jwtSecret = process.env.JWT_SECRET ?? DEFAULT_JWT_SECRET;
 
 @Module({
   imports: [

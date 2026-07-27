@@ -30,7 +30,7 @@ export function FilterPresetsPanel({
           <input
             value={presetNameDraft}
             onChange={(event) => onPresetNameChange(event.target.value)}
-            placeholder="예: 신규 문의만"
+            placeholder="예: 신규 접수만"
             className="w-full min-w-52 rounded-xl border border-[#e5e0d8] bg-[#faf9f7] px-3 py-2 text-sm text-[#1a1a1a] outline-none ring-[#c17f59] focus:ring sm:w-56"
           />
           <button

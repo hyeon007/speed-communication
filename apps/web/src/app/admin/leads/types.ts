@@ -1,4 +1,10 @@
 export type LeadStatus = 'new' | 'in_progress' | 'completed';
+export type ConsultationType =
+  | 'number_transfer'
+  | 'device_change'
+  | 'new_subscription'
+  | 'undecided';
+export type PreferredCarrier = 'SKT' | 'KT' | 'LGU+' | 'undecided';
 export type AdminRole = 'editor' | 'operator' | 'viewer';
 export type SortBy = 'createdAt' | 'name' | 'status';
 export type SortDirection = 'asc' | 'desc';
@@ -10,6 +16,8 @@ export type Lead = {
   name: string;
   phone: string;
   interestDevice: string;
+  consultationType: ConsultationType | null;
+  preferredCarrier: PreferredCarrier | null;
   contactTime: string;
   memo: string | null;
   status: LeadStatus;
@@ -132,6 +140,20 @@ export function formatStatus(status: LeadStatus): string {
   }
 
   return '완료';
+}
+
+export function formatConsultationType(type: ConsultationType | null): string {
+  if (type === 'number_transfer') return '번호이동';
+  if (type === 'device_change') return '기기변경';
+  if (type === 'new_subscription') return '신규가입';
+  if (type === 'undecided') return '상담 후 결정';
+  return '미선택';
+}
+
+export function formatPreferredCarrier(carrier: PreferredCarrier | null): string {
+  if (carrier === 'LGU+') return 'LG U+';
+  if (carrier === 'undecided') return '상담 후 결정';
+  return carrier ?? '미선택';
 }
 
 export function formatKoreanDateTime(input: string): string {

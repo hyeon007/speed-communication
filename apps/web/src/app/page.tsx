@@ -39,7 +39,7 @@ export default function Home() {
               onClick={() => openConsultModal()}
               className="text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-6 py-3 transition-all duration-500 hover:bg-[#9a6347]"
             >
-              무료 상담 신청
+              상담 신청 접수
             </button>
           </nav>
         </header>
@@ -50,7 +50,7 @@ export default function Home() {
           {[
             { title: '기기 추천', desc: '사용 패턴에 맞춘 모델·용량·색상 추천' },
             { title: '요금 최적화', desc: '통신 패턴 기반 가장 유리한 요금제 제안' },
-            { title: '빠른 연결', desc: '신청 후 24시간 내 상담 연락 보장' },
+            { title: '빠른 연결', desc: '접수 확인 후 24시간 내 후속 연락 진행' },
           ].map((item) => (
             <MotionItem key={item.title}>
               <MotionHoverCard className="group border-t border-[#e5e0d8] pt-8 transition-shadow duration-500 hover:shadow-[0_12px_28px_rgba(26,26,26,0.05)]">
@@ -63,18 +63,18 @@ export default function Home() {
 
         <MotionSection className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24" delay={0.1}>
           <div className="max-w-2xl">
-            <p className="text-xs tracking-[0.3em] uppercase text-[#c17f59]">전문가 상담</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-[#c17f59]">상담 신청 접수</p>
             <h3 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">
-              지금 바로 전문가 상담을 받아보세요
+              지금 바로 상담 신청을 접수해보세요
             </h3>
             <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">
-              PG 결제 없이 간단히 신청하면, 조건 비교부터 개통 전략까지 직접 안내해드립니다.
+              PG 결제 없이 간단히 접수하면, 내부 확인 후 조건 비교부터 개통 방향까지 순차적으로 안내해드립니다.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <ConsultCtaButton
                 className="text-xs tracking-[0.15em] uppercase text-[#faf9f7] bg-[#c17f59] px-8 py-4 transition-all duration-500 hover:-translate-y-0.5 hover:bg-[#9a6347]"
               >
-                상담 신청하기
+                상담 신청 접수하기
               </ConsultCtaButton>
               <a
                 href={contactPhoneHref}

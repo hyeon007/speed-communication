@@ -54,7 +54,7 @@ export function LeadBulkActions({
           disabled={!selectedCount || isBulkUpdating || !canBulkWrite}
           className="rounded-xl bg-[#c17f59] px-4 py-2 text-sm text-[#faf9f7] transition hover:bg-[#9a6347] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isBulkUpdating ? '일괄 처리 중...' : '선택 문의 상태 일괄 변경'}
+          {isBulkUpdating ? '일괄 처리 중...' : '선택 접수 상태 일괄 변경'}
         </button>
       </div>
       <p className="mt-2 text-xs text-[#8a8a8a]">

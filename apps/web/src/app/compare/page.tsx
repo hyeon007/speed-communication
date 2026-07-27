@@ -48,10 +48,10 @@ export default function ComparePage() {
         <ConsultCtaButton
           className="gallery-link inline-flex px-8 py-4 text-xs tracking-[0.15em] uppercase text-[#5a5a5a] transition-all duration-500 hover:-translate-y-0.5 hover:text-[#1a1a1a]"
         >
-          비교 결과로 상담 신청하기
+          비교 결과로 상담 신청 접수하기
         </ConsultCtaButton>
         <p className="mt-4 text-[11px] leading-5 text-[#8a8a8a]">
-          *조건 충족 시 최대 50만원 상당 지원 혜택 적용이 가능하며, 상세 기준은 상담 시 안내됩니다.
+          *가격·지원금·개통 조건은 기기와 가입 유형을 확인한 뒤 당일 정책 기준으로 안내드립니다.
         </p>
       </MotionSection>
     </main>

@@ -4,6 +4,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AdminRequestAuditInterceptor } from './common/interceptors/admin-request-audit.interceptor';
+import { shouldEnableSwagger } from './swagger';
 
 const DEFAULT_DEVELOPMENT_CORS_ORIGINS = [
   'http://localhost:3000',
@@ -58,24 +59,26 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new AdminRequestAuditInterceptor());
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('SP Mobile Promotion API')
-    .setDescription('Admin/auth/lead management API documentation')
-    .setVersion('1.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'admin-bearer',
-    )
-    .build();
+  if (shouldEnableSwagger()) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('SP Mobile Promotion API')
+      .setDescription('Admin/auth/lead management API documentation')
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+        'admin-bearer',
+      )
+      .build();
 
-  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, swaggerDocument, {
-    customSiteTitle: 'SP API Docs',
-  });
+    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, swaggerDocument, {
+      customSiteTitle: 'SP API Docs',
+    });
+  }
 
   await app.listen(process.env.PORT ?? 3001);
 }

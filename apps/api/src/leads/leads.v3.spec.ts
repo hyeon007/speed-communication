@@ -288,7 +288,7 @@ describe('Admin Leads v3 (integration)', () => {
     expect(csvResponse.headers['content-type']).toContain('text/csv');
     expect(csvResponse.text.startsWith('\uFEFF')).toBe(true);
     expect(csvResponse.text).toContain(
-      'id,name,phone,interestDevice,contactTime,status,memo,createdAt',
+      'id,name,phone,interestDevice,consultationType,preferredCarrier,contactTime,status,memo,createdAt',
     );
     expect(csvResponse.text).toContain('"completed"');
     expect(csvResponse.text).toContain('Line ""A""\\nLine B');
