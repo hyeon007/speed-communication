@@ -85,58 +85,6 @@ export default function Home() {
             </div>
           </div>
         </MotionSection>
-
-        <MotionSection className="mt-24 border-t border-[#e5e0d8] pt-16 md:mt-32 md:pt-24" delay={0.1}>
-          <div className="mb-12 md:mb-16">
-            <p className="text-xs tracking-[0.3em] uppercase text-[#c17f59]">고객 후기</p>
-            <h3 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-4xl">
-              실제 고객들의 이야기
-            </h3>
-          </div>
-
-          <MotionStagger className="grid gap-8 md:grid-cols-2 lg:grid-cols-2" delayChildren={0.15}>
-            {[
-              {
-                quote: "복잡한 요금제 비교를 한 번에 해결해주셨어요. 제 사용 패턴에 딱 맞는 요금제로 변경해서 매달 3만원이나 절약했네요.",
-                author: "김민수",
-                role: "직장인",
-              },
-              {
-                quote: "신규 개통이라 처음엔 걱정했는데, 상담사분이 자세히 설명해주셔서 안심하고 진행할 수 있었습니다. 진행도 빠르고 만족해요.",
-                author: "이서연",
-                role: "대학생",
-              },
-              {
-                quote: "기기 선택부터 요금제까지 A to Z로 도와주셔서 시간을 많이 아꼈어요. 전문가 상담이 이렇게 중요한 줄 몰랐습니다.",
-                author: "박준혁",
-                role: "사업자",
-              },
-              {
-                quote: "기존 통신사에서 변경하는 게 복잡할 줄 알았는데, 상담 한 번으로 깔끔하게 처리됐어요. 정말 편했습니다.",
-                author: "정유진",
-                role: "프리랜서",
-              },
-            ].map((review) => (
-              <MotionItem key={review.author}>
-                <MotionHoverCard className="group relative border border-[#e5e0d8] p-8 transition-all duration-500 hover:border-[#c17f59] hover:shadow-lg">
-                  <div className="absolute top-6 left-6 text-6xl leading-none font-serif text-[#e5e0d8]">“</div>
-                  <blockquote className="relative pt-8">
-                    <p className="mb-6 text-sm leading-7 text-[#3a3a3a]">{review.quote}</p>
-                    <footer className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e5e0d8]">
-                        <span className="text-xs font-medium text-[#5a5a5a]">{review.author.charAt(0)}</span>
-                      </div>
-                      <div>
-                        <cite className="text-sm not-italic font-medium text-[#1a1a1a]">{review.author}</cite>
-                        <p className="text-xs text-[#8a8a8a]">{review.role}</p>
-                      </div>
-                    </footer>
-                  </blockquote>
-                </MotionHoverCard>
-              </MotionItem>
-            ))}
-          </MotionStagger>
-        </MotionSection>
       </main>
     </>
   );
