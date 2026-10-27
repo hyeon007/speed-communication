@@ -122,8 +122,18 @@ export const galaxyDevices: Device[] = withSlugs([
     sourcePage: 'https://news.samsung.com/us/samsung-unveils-galaxy-s26-series-most-intuitive-galaxy-ai-phone-yet',
   },
   {
+    name: 'Galaxy S26 FE',
+    highlight: '플래그십 실속형',
+    imageUrl: '/images/devices/galaxy-s26-fe.jpg',
+    sourcePage:
+      'https://news.samsung.com/global/samsung-galaxy-s26-fe-delivering-the-latest-flagship-experience-focused-on-what-matters-most',
+    colors: ['블루베리', '그라파이트', '피스타치오'],
+    storageOptions: ['256GB'],
+  },
+  {
     name: 'Galaxy Z Flip7 FE',
     highlight: '실속형 폴더블',
+    imageUrl: '/images/devices/galaxy-z-flip7-fe.jpg',
     sourcePage: 'https://www.samsung.com/sec/smartphones/galaxy-z-flip7-fe/',
   },
   {
