@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { buildApiUrl, isLeadSubmissionConfigured } from '@/lib/api';
+import { TURNSTILE_SITE_KEY, TurnstileWidget } from '@/components/turnstile-widget';
 
 type FormState = {
   name: string;
@@ -39,6 +40,8 @@ export function ConsultModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const firstInputRef = useRef<HTMLInputElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [isLeadSubmissionAvailable, setIsLeadSubmissionAvailable] = useState<boolean | null>(null);
@@ -50,9 +53,10 @@ export function ConsultModal({
       form.interestDevice.trim().length >= 2 &&
       form.consultationType.length > 0 &&
       form.preferredCarrier.length > 0 &&
-      form.contactTime.trim().length >= 2
+      form.contactTime.trim().length >= 2 &&
+      (!TURNSTILE_SITE_KEY || turnstileToken !== null)
     );
-  }, [form]);
+  }, [form, turnstileToken]);
 
   // Reset form when modal closes
   useEffect(() => {
@@ -232,7 +236,7 @@ export function ConsultModal({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, turnstileToken }),
       });
 
       const payload = (await response.json()) as {
@@ -250,6 +254,7 @@ export function ConsultModal({
       setErrorMessage('네트워크 오류로 신청이 실패했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
+      setTurnstileResetKey((key) => key + 1);
     }
   }
 
@@ -421,6 +426,8 @@ export function ConsultModal({
                       required
                     />
                   </label>
+
+                  <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
 
                   {serverMessage ? (
                     <p className="rounded-xl border border-emerald-400/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">

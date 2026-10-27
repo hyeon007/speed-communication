@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { MotionSection } from '@/components/motion-presets';
 import { buildApiUrl, isLeadSubmissionConfigured } from '@/lib/api';
+import { TURNSTILE_SITE_KEY, TurnstileWidget } from '@/components/turnstile-widget';
 
 type FormState = {
   name: string;
@@ -29,6 +30,8 @@ export default function ConsultPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isLeadSubmissionAvailable, setIsLeadSubmissionAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -42,9 +45,10 @@ export default function ConsultPage() {
       form.interestDevice.trim().length >= 2 &&
       form.consultationType.length > 0 &&
       form.preferredCarrier.length > 0 &&
-      form.contactTime.trim().length >= 2
+      form.contactTime.trim().length >= 2 &&
+      (!TURNSTILE_SITE_KEY || turnstileToken !== null)
     );
-  }, [form]);
+  }, [form, turnstileToken]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,7 +72,7 @@ export default function ConsultPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, turnstileToken }),
       });
 
       const payload = (await response.json()) as {
@@ -86,6 +90,7 @@ export default function ConsultPage() {
       setErrorMessage('네트워크 오류로 신청이 실패했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
+      setTurnstileResetKey((key) => key + 1);
     }
   }
 
@@ -212,6 +217,8 @@ export default function ConsultPage() {
             required
           />
         </label>
+
+        <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
 
         {serverMessage ? (
           <p className="rounded-xl border border-emerald-400/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">

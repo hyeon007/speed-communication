@@ -20,9 +20,10 @@ export default function PrivacyPage() {
         </MotionItem>
         <MotionItem className="mt-5">
           <p>
-            상담 신청 내용은 웹사이트 서버에 저장되지 않으며, 접수 즉시 이메일로 운영자에게 전달됩니다. 이를 위해
-            이메일 발송을 Resend, Inc.(미국)에 위탁하며, 신청 정보는 발송 시점에 해당 업체의 서버를 거쳐 국외로
-            이전됩니다. 웹사이트 운영(호스팅)은 Cloudflare, Inc.(미국)를 이용합니다.
+            상담 신청 내용은 접수 즉시 이메일로 운영자에게 전달됩니다. 이를 위해 이메일 발송을 Resend, Inc.(미국)에
+            위탁하며, 신청 정보는 발송 시점에 해당 업체의 서버를 거쳐 국외로 이전됩니다. 메일 누락에 대비해 신청
+            내용 사본을 웹사이트 운영(호스팅) 업체인 Cloudflare, Inc.(미국)의 저장소에 30일간 보관하며, 30일이
+            지나면 자동으로 삭제됩니다.
           </p>
         </MotionItem>
         <MotionItem className="mt-5">

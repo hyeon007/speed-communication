@@ -7,8 +7,9 @@
 
 - `apps/web` — Next.js 사이트 전체 (Cloudflare Workers 무료 플랜에 배포)
   - 기기 목록: `src/lib/device-catalog.ts` (DB 없이 코드에서 관리)
-  - 상담 접수: `POST /api/v1/leads` → 입력 검사 → Resend로 운영자 메일 발송 (서버에 저장하지 않음)
-  - 스팸 방지: 사람에게 보이지 않는 `website` 필드를 봇이 채우면 조용히 무시
+  - 상담 접수: `POST /api/v1/leads` → 입력 검사 → Turnstile 봇 확인 → Resend로 운영자 메일 발송
+  - 백업: 모든 신청을 Cloudflare KV(`LEADS`)에 30일간 보관 후 자동 삭제 (메일 누락·스팸함 대비)
+  - 스팸 방지: Cloudflare Turnstile + 봇만 채우는 숨김 `website` 필드
 - `.github/workflows/ci.yml` — lint, 테스트, 빌드
 - `.github/workflows/device-check.yml` — 매주 월요일 신규 기기 확인 (아래 참고)
 

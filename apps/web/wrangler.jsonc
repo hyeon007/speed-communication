@@ -14,6 +14,13 @@
       "service": "speed-communication"
     }
   ],
+  // Short-lived backup of consultation leads (30-day expiry). No id: wrangler creates the
+  // namespace on first deploy.
+  "kv_namespaces": [
+    {
+      "binding": "LEADS"
+    }
+  ],
   // Free *.workers.dev URL until a custom domain is attached.
   "workers_dev": true,
   "observability": {
