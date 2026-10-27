@@ -49,7 +49,7 @@ export default function Home() {
         <MotionStagger className="mt-24 grid gap-8 md:mt-32 md:grid-cols-3 md:gap-12" delayChildren={0.15}>
           {[
             { title: '기기 추천', desc: '사용 패턴에 맞춘 모델·용량·색상 추천' },
-            { title: '요금 최적화', desc: '통신 패턴 기반 가장 유리한 요금제 제안' },
+            { title: '요금 최적화', desc: '사용 패턴에 맞춘 요금제 비교·제안' },
             { title: '빠른 연결', desc: '접수 확인 후 24시간 내 후속 연락 진행' },
           ].map((item) => (
             <MotionItem key={item.title}>
@@ -68,7 +68,7 @@ export default function Home() {
               지금 바로 상담 신청을 접수해보세요
             </h3>
             <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">
-              PG 결제 없이 간단히 접수하면, 내부 확인 후 조건 비교부터 개통 방향까지 순차적으로 안내해드립니다.
+              온라인 결제 없이 간단히 접수하면, 내부 확인 후 조건 비교부터 개통 방향까지 순차적으로 안내해드립니다.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <ConsultCtaButton

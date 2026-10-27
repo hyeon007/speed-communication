@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: `${siteConfig.name} | 프리미엄 휴대폰 상담`,
     template: `%s | ${siteConfig.name}`,
   },
-  description: 'PG 없이 빠르게 연결되는 프리미엄 휴대폰 상담 플랫폼. 기기 추천, 요금 최적화, 전문가 상담으로 가장 유리한 조건을 찾아드립니다.',
+  description: '온라인 결제 없이 상담으로 진행하는 휴대폰 개통 상담. 기기 추천, 요금제 비교, 가족결합까지 사용 패턴에 맞춰 안내해드립니다.',
   keywords: [
     '휴대폰 상담',
     '요금제 비교',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     url: '/',
     siteName: siteConfig.name,
     title: `${siteConfig.name} | 프리미엄 휴대폰 상담`,
-    description: 'PG 없이 빠르게 연결되는 프리미엄 휴대폰 상담 플랫폼. 기기 추천, 요금 최적화, 전문가 상담으로 가장 유리한 조건을 찾아드립니다.',
+    description: '온라인 결제 없이 상담으로 진행하는 휴대폰 개통 상담. 기기 추천, 요금제 비교, 가족결합까지 사용 패턴에 맞춰 안내해드립니다.',
     images: [
       {
         url: '/og-image.png',
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.name} | 프리미엄 휴대폰 상담`,
-    description: 'PG 없이 빠르게 연결되는 프리미엄 휴대폰 상담 플랫폼. 기기 추천, 요금 최적화, 전문가 상담으로 가장 유리한 조건을 찾아드립니다.',
+    description: '온라인 결제 없이 상담으로 진행하는 휴대폰 개통 상담. 기기 추천, 요금제 비교, 가족결합까지 사용 패턴에 맞춰 안내해드립니다.',
     images: ['/og-image.png'],
     creator: '@speed_comm',
   },

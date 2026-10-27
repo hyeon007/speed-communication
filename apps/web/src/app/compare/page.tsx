@@ -24,7 +24,7 @@ export default function ComparePage() {
           <thead>
             <tr className="border-b border-[#e5e0d8] text-xs tracking-[0.15em] uppercase text-[#c17f59]">
               <th className="px-4 py-4 font-medium">항목</th>
-              <th className="px-4 py-4 font-medium">iPhone 17 Pro</th>
+              <th className="px-4 py-4 font-medium">iPhone 18 Pro</th>
               <th className="px-4 py-4 font-medium">Galaxy S26 Ultra</th>
             </tr>
           </thead>

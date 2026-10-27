@@ -2,21 +2,23 @@ import { ConsultCtaButton } from '@/components/consult-cta-button';
 import { MotionHoverCard, MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { SupportPromoNote } from '@/components/support-promo-note';
 
+// Usage profiles, not products: actual plans and prices differ by carrier and change often,
+// so the page points customers to a consultation instead of listing fixed fees.
 const plans = [
   {
-    name: 'Smart Basic',
-    monthlyFee: '55,000원대',
-    features: ['데이터 20GB', '음성/문자 기본', '가성비 중심'],
+    name: '알뜰하게',
+    summary: '데이터를 적게 쓰고 통신비를 줄이고 싶은 분',
+    features: ['알뜰폰(MVNO) 요금제 비교', '소용량 데이터 요금제', '자급제·기존 기기 유지 상담'],
   },
   {
-    name: 'Smart Plus',
-    monthlyFee: '75,000원대',
-    features: ['데이터 100GB', '영상·게임 최적화', '추가 할인 조합 추천'],
+    name: '넉넉하게',
+    summary: '영상·SNS를 자주 보는 분',
+    features: ['중·대용량 데이터 요금제', '기기 변경과 함께 조건 비교', '선택약정·결합 할인 확인'],
   },
   {
-    name: 'Smart Infinity',
-    monthlyFee: '95,000원대',
-    features: ['데이터 무제한', '프리미엄 혜택', '가족결합 시 추가 절감'],
+    name: '무제한으로',
+    summary: '데이터 걱정 없이 쓰고 싶은 분',
+    features: ['무제한 요금제', '가족결합 시 절감 폭 확인', '테더링·로밍 사용 패턴 반영'],
   },
 ];
 
@@ -27,7 +29,8 @@ export default function PlansPage() {
         <p className="text-xs font-light tracking-[0.3em] uppercase text-[#c17f59]">PLAN SELECTOR</p>
         <h1 className="mt-6 font-serif text-3xl font-normal leading-tight text-[#1a1a1a] md:text-5xl">요금제 제안</h1>
         <p className="mt-6 text-sm leading-7 text-[#5a5a5a]">
-          사용량, 가족결합 여부, 약정 조건을 반영해 가장 유리한 요금제를 추천합니다.
+          통신사(SKT·KT·LG U+·알뜰폰)별 요금제는 수시로 바뀝니다. 사용량, 가족결합 여부, 약정 조건을 듣고 당일
+          기준으로 맞는 요금제를 비교해 안내드립니다.
         </p>
         <SupportPromoNote variant="banner" className="max-w-3xl" />
       </MotionSection>
@@ -37,7 +40,7 @@ export default function PlansPage() {
           <MotionItem key={plan.name}>
             <MotionHoverCard className="group border-t border-[#e5e0d8] pt-8 transition-shadow duration-500 hover:shadow-[0_12px_28px_rgba(26,26,26,0.05)]">
               <h2 className="font-serif text-2xl font-normal text-[#1a1a1a]">{plan.name}</h2>
-              <p className="mt-4 text-2xl font-light text-[#c17f59]">예시 월 {plan.monthlyFee}</p>
+              <p className="mt-4 text-sm leading-7 text-[#c17f59]">{plan.summary}</p>
               <ul className="mt-6 space-y-2 text-sm leading-7 text-[#5a5a5a]">
                 {plan.features.map((feature) => (
                   <li key={feature}>• {feature}</li>

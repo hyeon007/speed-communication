@@ -25,7 +25,7 @@ export function HeroShowcase() {
         transition={reduceMotion ? undefined : { duration: 1.2, delay: 0.3, ease: easeOut }}
         className="mt-8 max-w-3xl font-serif text-4xl font-normal leading-[1.15] text-[#1a1a1a] md:text-6xl md:leading-[1.1]"
       >
-        새 휴대폰, 가장 유리한 조건으로
+        새 휴대폰, 나에게 맞는 조건으로
         <span className="block mt-2 text-[#c17f59]">전문가가 직접 상담합니다.</span>
       </motion.h1>
 
@@ -52,7 +52,7 @@ export function HeroShowcase() {
         transition={reduceMotion ? undefined : { duration: 1, delay: 0.7 }}
         className="mt-12 flex flex-wrap gap-4"
       >
-        {['당일 콜백', '요금제 최적화', '가족결합 설계', '당일 정책 확인'].map((text, index) => (
+        {['빠른 콜백', '요금제 최적화', '가족결합 설계', '당일 정책 확인'].map((text, index) => (
           <motion.span
             key={text}
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}
