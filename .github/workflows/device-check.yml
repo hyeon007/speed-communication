@@ -1,0 +1,42 @@
+name: New device check
+
+on:
+  schedule:
+    # Every Monday 09:00 KST (00:00 UTC)
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Find models missing from the catalog
+        run: node scripts/check-new-devices.mjs > candidates.json
+      - name: Open one issue per new model
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node -e '
+            const candidates = require("./candidates.json");
+            for (const c of candidates) console.log(JSON.stringify(c));
+          ' | while IFS= read -r line; do
+            name=$(jq -r .name <<<"$line")
+            title="[기기 후보] $name"
+            # Skip models already raised, including ones the owner closed as "not selling".
+            if gh issue list --state all --search "in:title \"$title\"" --json title --jq '.[].title' | grep -Fxq "$title"; then
+              continue
+            fi
+            body=$(jq -r '"공식 뉴스룸에서 사이트 기기 목록에 없는 모델이 발견되었습니다.\n\n- 모델: **\(.name)**\n- 기사: [\(.title)](\(.link))\n\n**판매할 모델이면** 이 이슈에 댓글로 남기거나 `apps/web/src/lib/device-catalog.ts`에 추가해 주세요. main에 반영되면 사이트에 자동 배포됩니다.\n\n**판매하지 않는 모델이면** 이 이슈를 닫아 주세요. 같은 모델은 다시 알리지 않습니다."' <<<"$line")
+            gh issue create --title "$title" --body "$body"
+          done
