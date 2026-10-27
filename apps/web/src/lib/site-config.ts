@@ -3,10 +3,10 @@ const configuredContactPhone = process.env.NEXT_PUBLIC_CONTACT_PHONE?.trim();
 
 export const siteConfig = {
   name: configuredSiteName && configuredSiteName.length > 0 ? configuredSiteName : '스피드 통신',
-  contactPhone:
-    configuredContactPhone && configuredContactPhone.length > 0
-      ? configuredContactPhone
-      : '010-1234-5678',
+  // Empty until the store has a phone line; phone links and "call us" copy are hidden then.
+  contactPhone: configuredContactPhone ?? '',
 };
 
-export const contactPhoneHref = `tel:${siteConfig.contactPhone.replace(/[^0-9+]/g, '')}`;
+export const contactPhoneHref = siteConfig.contactPhone
+  ? `tel:${siteConfig.contactPhone.replace(/[^0-9+]/g, '')}`
+  : '';

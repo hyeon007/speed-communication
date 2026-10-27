@@ -11,7 +11,9 @@ const DEFAULT_FROM = 'onboarding@resend.dev';
 const RECEIVED = { status: 'received', message: '상담 신청이 접수되었습니다.' };
 
 function fallbackMessage(reason: string) {
-  return `${reason} ${siteConfig.contactPhone}로 전화 주시면 바로 안내드립니다.`;
+  return siteConfig.contactPhone
+    ? `${reason} ${siteConfig.contactPhone}로 전화 주시면 바로 안내드립니다.`
+    : `${reason} 잠시 후 다시 시도해주세요.`;
 }
 
 async function sendLeadEmail(lead: Lead, receivedAt: Date): Promise<EmailStatus> {

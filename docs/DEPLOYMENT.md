@@ -30,7 +30,7 @@ Cloudflare 대시보드 → Workers & Pages → Create → **Import a repository
 | 이름 | 설명 |
 |---|---|
 | `NEXT_PUBLIC_SITE_NAME` | 매장 이름 (없으면 `스피드 통신`) |
-| `NEXT_PUBLIC_CONTACT_PHONE` | 매장 전화번호. **없으면 `010-1234-5678`이 표시되므로 반드시 설정** |
+| `NEXT_PUBLIC_CONTACT_PHONE` | 매장 전화번호. 없으면 전화 문의 버튼과 "전화 주세요" 안내가 숨겨집니다 |
 | `NEXT_PUBLIC_SITE_URL` | 사이트 주소 (sitemap·robots에 사용) |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Turnstile 사이트 키 (아래 5번) |
 

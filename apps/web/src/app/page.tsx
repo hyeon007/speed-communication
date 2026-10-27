@@ -76,12 +76,14 @@ export default function Home() {
               >
                 상담 신청 접수하기
               </ConsultCtaButton>
-              <a
-                href={contactPhoneHref}
-                className="gallery-link text-xs tracking-[0.15em] uppercase text-[#5a5a5a] px-8 py-4 transition-colors duration-500 hover:text-[#1a1a1a]"
-              >
-                전화 문의 {siteConfig.contactPhone}
-              </a>
+              {siteConfig.contactPhone ? (
+                <a
+                  href={contactPhoneHref}
+                  className="gallery-link text-xs tracking-[0.15em] uppercase text-[#5a5a5a] px-8 py-4 transition-colors duration-500 hover:text-[#1a1a1a]"
+                >
+                  전화 문의 {siteConfig.contactPhone}
+                </a>
+              ) : null}
             </div>
           </div>
         </MotionSection>
