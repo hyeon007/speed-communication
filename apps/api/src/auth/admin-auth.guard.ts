@@ -5,7 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ADMIN_AUTH_COOKIE_NAME, readAdminAuthCookie } from './admin-auth-cookie';
+import {
+  ADMIN_AUTH_COOKIE_NAME,
+  readAdminAuthCookie,
+} from './admin-auth-cookie';
 import { AdminJwtPayload, AuthService } from './auth.service';
 
 export type AdminRequest = Request & {

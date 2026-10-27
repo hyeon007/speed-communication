@@ -1,9 +1,6 @@
 export type LeadStatus = 'new' | 'in_progress' | 'completed';
 export type ConsultationType =
-  | 'number_transfer'
-  | 'device_change'
-  | 'new_subscription'
-  | 'undecided';
+  'number_transfer' | 'device_change' | 'new_subscription' | 'undecided';
 export type PreferredCarrier = 'SKT' | 'KT' | 'LGU+' | 'undecided';
 
 export interface Lead {

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
-  DeviceBrand as PrismaDeviceBrand,
   DevicePublicationStatus as PrismaDevicePublicationStatus,
   Prisma,
 } from '@prisma/client';
@@ -90,8 +89,8 @@ export class PrismaDeviceRepository implements DeviceRepository {
   ): Prisma.DeviceCreateInput {
     return {
       ...input,
-      brand: input.brand as PrismaDeviceBrand,
-      status: input.status as PrismaDevicePublicationStatus,
+      brand: input.brand,
+      status: input.status,
     };
   }
 
@@ -100,12 +99,8 @@ export class PrismaDeviceRepository implements DeviceRepository {
   ): Prisma.DeviceUpdateInput {
     return {
       ...input,
-      ...(input.brand !== undefined
-        ? { brand: input.brand as PrismaDeviceBrand }
-        : {}),
-      ...(input.status !== undefined
-        ? { status: input.status as PrismaDevicePublicationStatus }
-        : {}),
+      ...(input.brand !== undefined ? { brand: input.brand } : {}),
+      ...(input.status !== undefined ? { status: input.status } : {}),
     };
   }
 }

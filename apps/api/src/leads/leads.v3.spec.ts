@@ -13,6 +13,21 @@ function toRecord(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
+function joinHeaderValues(value: unknown): string {
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    const values: unknown[] = value;
+    return values
+      .filter((item): item is string => typeof item === 'string')
+      .join(';');
+  }
+
+  return '';
+}
+
 describe('Admin Leads v3 (integration)', () => {
   let app: INestApplication<App>;
   const originalRateLimitTrustProxy = process.env.RATE_LIMIT_TRUST_PROXY_HEADER;
@@ -89,9 +104,11 @@ describe('Admin Leads v3 (integration)', () => {
       })
       .expect(201);
 
-    expect(loginResponse.headers['set-cookie']?.join(';') ?? '').toContain(
-      'sp_admin_access_token=',
-    );
+    expect(
+      joinHeaderValues(
+        toRecord(loginResponse.headers as unknown)['set-cookie'],
+      ),
+    ).toContain('sp_admin_access_token=');
 
     const meResponse = await agent.get('/api/v1/admin/auth/me').expect(200);
     const meBody = toRecord(meResponse.body as unknown);
@@ -103,9 +120,11 @@ describe('Admin Leads v3 (integration)', () => {
       .post('/api/v1/admin/auth/logout')
       .expect(201);
 
-    expect(logoutResponse.headers['set-cookie']?.join(';') ?? '').toContain(
-      'sp_admin_access_token=;',
-    );
+    expect(
+      joinHeaderValues(
+        toRecord(logoutResponse.headers as unknown)['set-cookie'],
+      ),
+    ).toContain('sp_admin_access_token=;');
 
     await agent.get('/api/v1/admin/auth/me').expect(401);
   });

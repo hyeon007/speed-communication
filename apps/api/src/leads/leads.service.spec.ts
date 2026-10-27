@@ -28,7 +28,7 @@ describe('LeadsService date filters', () => {
       findStatusAudits: jest.fn(),
       updateStatus: jest.fn(),
       updateMemo: jest.fn(),
-    } as unknown as jest.Mocked<LeadRepository>;
+    };
   }
 
   function createService(repository: jest.Mocked<LeadRepository>) {
@@ -48,7 +48,7 @@ describe('LeadsService date filters', () => {
       endDate: '2026-04-11',
     });
 
-    expect(repository.findAll).toHaveBeenCalledWith(
+    expect(repository.findAll.mock.calls[0]?.[0]).toEqual(
       expect.objectContaining({
         startDate: new Date('2026-04-10T15:00:00.000Z'),
         endDate: new Date('2026-04-11T14:59:59.999Z'),
@@ -65,7 +65,7 @@ describe('LeadsService date filters', () => {
       endDate: '2026-04-11',
     });
 
-    expect(repository.getActivity).toHaveBeenCalledWith(
+    expect(repository.getActivity.mock.calls[0]?.[0]).toEqual(
       expect.objectContaining({
         startDate: new Date('2026-04-10T15:00:00.000Z'),
         endDate: new Date('2026-04-11T14:59:59.999Z'),

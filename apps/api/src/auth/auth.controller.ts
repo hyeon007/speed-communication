@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -77,10 +85,7 @@ export class AuthController {
   })
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie(
-      ADMIN_AUTH_COOKIE_NAME,
-      getAdminAuthCookieOptions(),
-    );
+    response.clearCookie(ADMIN_AUTH_COOKIE_NAME, getAdminAuthCookieOptions());
 
     return {
       success: true,

@@ -32,9 +32,7 @@ type LeadBulkStatusChangedEvent = BaseEmailEvent & {
 };
 
 type LeadEmailEvent =
-  | LeadCreatedEvent
-  | LeadStatusChangedEvent
-  | LeadBulkStatusChangedEvent;
+  LeadCreatedEvent | LeadStatusChangedEvent | LeadBulkStatusChangedEvent;
 
 function escapeHtml(input: string): string {
   return input

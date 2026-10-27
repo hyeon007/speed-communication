@@ -94,7 +94,10 @@ export function getCurrentSeoulDateRange(now = new Date()): {
   return getSeoulDateRangeForDateKey(formatSeoulDateKey(now));
 }
 
-export function getSeoulRecentDateWindow(days: number, now = new Date()): {
+export function getSeoulRecentDateWindow(
+  days: number,
+  now = new Date(),
+): {
   start: Date;
   end: Date;
   dateKeys: string[];

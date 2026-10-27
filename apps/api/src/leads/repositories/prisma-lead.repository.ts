@@ -118,7 +118,7 @@ export class PrismaLeadRepository implements LeadRepository {
     const updated = await this.prisma.lead.update({
       where: { id },
       data: {
-        status: input.status as PrismaLeadStatus,
+        status: input.status,
       },
     });
 
@@ -183,16 +183,16 @@ export class PrismaLeadRepository implements LeadRepository {
           },
         },
         data: {
-          status: status as PrismaLeadStatus,
+          status: status,
         },
       });
 
       const auditRows = found
-        .filter((row) => row.status !== (status as PrismaLeadStatus))
+        .filter((row) => row.status !== status)
         .map((row) => ({
           leadId: row.id,
           previousStatus: row.status,
-          nextStatus: status as PrismaLeadStatus,
+          nextStatus: status,
           changedBy,
         }));
 
@@ -261,8 +261,11 @@ export class PrismaLeadRepository implements LeadRepository {
 
   async getTrend(days: number): Promise<LeadTrendStats> {
     const safeDays = Math.max(1, Math.min(days, 90));
-    const { start: startDateObj, end: endDateObj, dateKeys } =
-      getSeoulRecentDateWindow(safeDays);
+    const {
+      start: startDateObj,
+      end: endDateObj,
+      dateKeys,
+    } = getSeoulRecentDateWindow(safeDays);
 
     const dailyMap = new Map<string, number>(dateKeys.map((key) => [key, 0]));
 
@@ -319,12 +322,12 @@ export class PrismaLeadRepository implements LeadRepository {
         : {}),
       ...(query.previousStatus
         ? {
-            previousStatus: query.previousStatus as PrismaLeadStatus,
+            previousStatus: query.previousStatus,
           }
         : {}),
       ...(query.nextStatus
         ? {
-            nextStatus: query.nextStatus as PrismaLeadStatus,
+            nextStatus: query.nextStatus,
           }
         : {}),
       ...(query.startDate || query.endDate
@@ -390,7 +393,7 @@ export class PrismaLeadRepository implements LeadRepository {
     };
 
     return {
-      ...(query.status ? { status: query.status as PrismaLeadStatus } : {}),
+      ...(query.status ? { status: query.status } : {}),
       ...(query.startDate || query.endDate ? { createdAt } : {}),
       ...(query.search
         ? {

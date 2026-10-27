@@ -183,7 +183,8 @@ export class InMemoryLeadRepository implements LeadRepository {
       (lead) => lead.createdAt >= startOfToday && lead.createdAt <= endOfToday,
     ).length;
     const last7DaysCount = this.leads.filter(
-      (lead) => lead.createdAt >= last7DaysStart && lead.createdAt <= endOfToday,
+      (lead) =>
+        lead.createdAt >= last7DaysStart && lead.createdAt <= endOfToday,
     ).length;
 
     return Promise.resolve({
@@ -198,8 +199,11 @@ export class InMemoryLeadRepository implements LeadRepository {
 
   getTrend(days: number): Promise<LeadTrendStats> {
     const safeDays = Math.max(1, Math.min(days, 90));
-    const { start: startDateObj, end: endDateObj, dateKeys } =
-      getSeoulRecentDateWindow(safeDays);
+    const {
+      start: startDateObj,
+      end: endDateObj,
+      dateKeys,
+    } = getSeoulRecentDateWindow(safeDays);
 
     const dailyMap = new Map<string, number>(dateKeys.map((key) => [key, 0]));
 

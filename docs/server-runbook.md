@@ -18,6 +18,10 @@ GitHub Actions 원격 배포를 사용할 경우 아래 Secrets가 필요합니�
 - `GHCR_USERNAME`
 - `GHCR_READ_TOKEN` (GHCR pull 권한)
 
+Secrets 등록 후 GitHub 저장소의 Actions variable `DEPLOY_ENABLED`를 `true`로
+설정해야 `deploy-remote` 작업이 실행됩니다. 변수가 없거나 다른 값이면 컨테이너
+이미지만 게시하고 원격 배포는 안전하게 건너뜁니다.
+
 ## 2) 최초 배포
 
 ```bash
