@@ -28,7 +28,7 @@ Cloudflare 대시보드 → Workers & Pages → Create → **Import a repository
 
 ## 3. 환경변수
 
-**Build variables** (빌드 시 사이트에 들어가는 공개 값, Workers Builds 설정에서 입력):
+**Build variables** (빌드 시 사이트에 들어가는 공개 값. 설정 → **빌드** → "API 토큰" 아래 "변수 및 암호", 유형 **변수**):
 
 | 이름 | 설명 |
 |---|---|
@@ -37,7 +37,8 @@ Cloudflare 대시보드 → Workers & Pages → Create → **Import a repository
 | `NEXT_PUBLIC_SITE_URL` | 사이트 주소 (sitemap·robots에 사용) |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Turnstile 사이트 키 (아래 5번) |
 
-**Secrets** (Worker 설정 → Variables and Secrets, 또는 `npx wrangler secret put 이름`):
+**Secrets** (실행 중 서버가 쓰는 값. 설정 페이지 **맨 위 "런타임 변수 및 시크릿"** → "+ 변수 추가", 유형 **비밀**.
+빌드 쪽 "변수 및 암호"에 넣으면 서버가 읽지 못합니다):
 
 | 이름 | 설명 |
 |---|---|
@@ -47,7 +48,9 @@ Cloudflare 대시보드 → Workers & Pages → Create → **Import a repository
 | `TURNSTILE_SECRET_KEY` | Turnstile 비밀 키 (아래 5번) |
 
 메일 설정이 빠져 있거나 발송에 실패하면 고객에게 "전화 주세요" 안내를 보여줍니다.
-Turnstile 키가 없으면 봇 확인 없이 접수합니다(로그에 경고). 두 키는 반드시 함께 설정하세요.
+Turnstile 키가 없으면 봇 확인 없이 접수합니다(로그에 경고).
+**순서 주의:** 사이트 키(빌드 변수)를 넣고 다시 빌드해 폼에 위젯이 보이는 것을 확인한 **뒤에** 비밀 키를 넣으세요.
+비밀 키만 먼저 있으면 위젯 없는 폼에서 보낸 신청이 모두 403으로 거절됩니다.
 
 ## 4. 도메인 연결
 
