@@ -1,14 +1,10 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { ConsultCtaButton } from '@/components/consult-cta-button';
 import { MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { SupportPromoNote } from '@/components/support-promo-note';
-import { fetchPublishedDevice } from '@/lib/device-api';
-import { findFallbackDevice, type Device } from '@/lib/device-catalog';
+import { allDevices, findDevice } from '@/lib/device-catalog';
 
 function DetailList({ title, items, fallback }: { title: string; items?: string[]; fallback: string }) {
   return (
@@ -29,45 +25,18 @@ function DetailList({ title, items, fallback }: { title: string; items?: string[
   );
 }
 
-export default function DeviceDetailPage() {
-  const params = useParams<{ slug: string }>();
-  const [device, setDevice] = useState<Device | null>(() => findFallbackDevice(params.slug) ?? null);
-  const [isLoading, setIsLoading] = useState(true);
+export const dynamicParams = false;
 
-  useEffect(() => {
-    let active = true;
+export function generateStaticParams() {
+  return allDevices.map((device) => ({ slug: device.slug }));
+}
 
-    void fetchPublishedDevice(params.slug)
-      .then((item) => {
-        if (active) {
-          setDevice(item);
-        }
-      })
-      .catch(() => {
-        // The catalog page fallback is intentionally retained for temporary API outages.
-      })
-      .finally(() => {
-        if (active) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [params.slug]);
-
-  if (!device && !isLoading) {
-    return (
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
-        <p className="text-sm text-[#5a5a5a]">요청하신 기기 정보를 찾을 수 없습니다.</p>
-        <Link href="/devices" className="mt-6 text-sm text-[#c17f59]">기기 라인업으로 돌아가기</Link>
-      </main>
-    );
-  }
+export default async function DeviceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const device = findDevice(slug);
 
   if (!device) {
-    return <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-24 pt-12 text-sm text-[#5a5a5a] md:px-12 md:pt-16">기기 정보를 불러오는 중...</main>;
+    notFound();
   }
 
   return (

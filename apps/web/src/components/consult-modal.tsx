@@ -11,6 +11,7 @@ type FormState = {
   consultationType: string;
   preferredCarrier: string;
   contactTime: string;
+  website: string;
 };
 
 const initialForm: FormState = {
@@ -20,6 +21,7 @@ const initialForm: FormState = {
   consultationType: '',
   preferredCarrier: '',
   contactTime: '',
+  website: '',
 };
 
 type ConsultModalProps = {
@@ -306,6 +308,17 @@ export function ConsultModal({
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
+              {/* Honeypot: hidden from people, filled in by bots. */}
+              <input
+                type="text"
+                name="website"
+                value={form.website}
+                onChange={(event) => setForm((prev) => ({ ...prev, website: event.target.value }))}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="hidden"
+              />
               <div className="flex-1 overflow-y-auto px-6 py-6">
                 <p className="text-sm leading-7 text-[#5a5a5a]">
                   아래 정보를 남겨주시면 접수 후 확인 뒤 24시간 내 연락드립니다.
@@ -388,6 +401,7 @@ export function ConsultModal({
                         <option value="SKT">SKT</option>
                         <option value="KT">KT</option>
                         <option value="LGU+">LG U+</option>
+                        <option value="MVNO">알뜰폰</option>
                         <option value="undecided">상담 후 결정</option>
                       </select>
                     </label>

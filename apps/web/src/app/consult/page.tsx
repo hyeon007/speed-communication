@@ -11,6 +11,7 @@ type FormState = {
   consultationType: string;
   preferredCarrier: string;
   contactTime: string;
+  website: string;
 };
 
 const initialForm: FormState = {
@@ -20,6 +21,7 @@ const initialForm: FormState = {
   consultationType: '',
   preferredCarrier: '',
   contactTime: '',
+  website: '',
 };
 
 export default function ConsultPage() {
@@ -107,6 +109,17 @@ export default function ConsultPage() {
           onSubmit={handleSubmit}
           className="mt-24 space-y-5 border-t border-[#e5e0d8] pt-8"
         >
+          {/* Honeypot: hidden from people, filled in by bots. */}
+          <input
+            type="text"
+            name="website"
+            value={form.website}
+            onChange={(event) => setForm((prev) => ({ ...prev, website: event.target.value }))}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+          />
         <label className="block text-sm text-[#5a5a5a]">
           이름
           <input
@@ -179,6 +192,7 @@ export default function ConsultPage() {
               <option value="SKT">SKT</option>
               <option value="KT">KT</option>
               <option value="LGU+">LG U+</option>
+              <option value="MVNO">알뜰폰</option>
               <option value="undecided">상담 후 결정</option>
             </select>
           </label>

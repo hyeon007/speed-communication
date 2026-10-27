@@ -1,31 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'www.apple.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'store.storeimages.cdn-apple.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.samsung.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.global.news.samsung.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.us.news.samsung.com',
-      },
-    ],
+    // Device images are small local files; serving them as-is avoids needing a paid
+    // image-resizing service on Cloudflare.
+    unoptimized: true,
   },
 };
 
 export default nextConfig;
+
+// Lets `next dev` read Cloudflare bindings and .dev.vars.
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+initOpenNextCloudflareForDev();

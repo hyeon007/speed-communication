@@ -2,12 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { ConsultCtaButton } from '@/components/consult-cta-button';
 import { MotionHoverCard, MotionImageReveal, MotionItem, MotionSection, MotionStagger } from '@/components/motion-presets';
 import { SupportPromoNote } from '@/components/support-promo-note';
-import { fetchPublishedDevices } from '@/lib/device-api';
-import { fallbackDevices, type Device } from '@/lib/device-catalog';
+import { appleDevices, galaxyDevices, type Device } from '@/lib/device-catalog';
 
 function shouldBypassImageOptimizer(imageUrl: string) {
   return imageUrl.includes('img.us.news.samsung.com');
@@ -82,29 +80,6 @@ function DeviceSection({ title, items, sectionClassName, listClassName }: Device
 }
 
 export default function DevicesPage() {
-  const [devices, setDevices] = useState<Device[]>(fallbackDevices);
-
-  useEffect(() => {
-    let active = true;
-
-    void fetchPublishedDevices()
-      .then((items) => {
-        if (active && items.length > 0) {
-          setDevices(items);
-        }
-      })
-      .catch(() => {
-        // Keep the verified fallback catalog visible if the API is temporarily unavailable.
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const appleDevices = devices.filter((device) => device.name.toLowerCase().startsWith('iphone'));
-  const galaxyDevices = devices.filter((device) => device.name.toLowerCase().startsWith('galaxy'));
-
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 pb-24 pt-12 md:px-12 md:pt-16">
       <MotionSection className="max-w-3xl">
