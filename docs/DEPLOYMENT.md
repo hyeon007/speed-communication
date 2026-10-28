@@ -1,7 +1,7 @@
 # 배포 (Cloudflare Workers 무료 플랜)
 
 사이트는 `apps/web` 하나만 Cloudflare Workers에 배포합니다. 서버·DB가 없어서 무료 플랜 한도
-(하루 10만 요청, Worker 압축 크기 3MB)에 들어갑니다. 현재 Worker 크기는 압축 기준 약 1.15MB입니다.
+(하루 10만 요청, Worker 크기 압축 전 64MiB)에 들어갑니다. 현재 Worker 크기는 압축 기준 약 1.15MB입니다.
 
 ## 1. 메일 발송 준비 (Resend)
 
