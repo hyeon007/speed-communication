@@ -20,7 +20,7 @@ Cloudflare 대시보드 → Workers & Pages → Create → **Import a repository
 | Build command | `npx opennextjs-cloudflare build` |
 | Deploy command | `npx opennextjs-cloudflare deploy` |
 | Version (preview) command | `npx opennextjs-cloudflare upload` |
-| Production branch | `cloudflare-migration` (Vercel에서 이전을 마치고 `main`에 병합한 뒤 `main`으로 변경) |
+| Production branch | `main` (설정 → 빌드 → 분기 제어) |
 | API token | 설정 → 빌드 → API 토큰에서 "새 토큰 생성" (처음 연결 때 생성된 토큰이 쓸 수 없는 상태로 남을 수 있음) |
 
 연결 후에는 프로덕션 분기에 push할 때마다 자동으로 빌드·배포되고, 다른 분기는 미리보기 버전으로 올라갑니다.
